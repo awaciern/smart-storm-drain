@@ -5,3 +5,6 @@ def index(request):
 
 def ui(request):
     return render(request, 'ui.html', context=None)
+
+def db(request):
+    return render(request, 'db.html', context=None)
