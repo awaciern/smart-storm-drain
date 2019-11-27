@@ -20,5 +20,6 @@ from webapp import views
 
 urlpatterns = [
     url('admin/', admin.site.urls),
-    url('', views.index, name='index'),
+    url('^$', views.index, name='index'),
+    url('^ui', views.user_interface, name='ui'),
 ]
