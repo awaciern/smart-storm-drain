@@ -83,6 +83,7 @@ WSGI_APPLICATION = 'smart_storm_drain.wsgi.application'
 #     }
 # }
 
+# SQL DB in Azure
 DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
