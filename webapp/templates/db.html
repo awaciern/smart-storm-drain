@@ -2,9 +2,34 @@
 <!DOCTYPE html>
 <html>
   <body>
-    <h2>Database Operations</h2>
-    <h2>
+    <h1>Smart Storm Drain</h1>
+    <h2>Database Interaction Test</h2>
+
+    {% block content %}
+    <h2>Enter a message</h2>
+    <form method="POST" class="post-form">{% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="save btn btn-default">Save</button>
+    </form>
+    {% endblock %}
+
+    <h2>Retrieved Messages</h2>
+    {% for message in messages %}
+    <div>
+        <p>Text: {{ message.text }}</p>
+        <p>Date: {{ message.date }}</p>
+        <br>
+    </div>
+    {% endfor %}
+    <h4>
+      <a href="{% url 'db' choice='none' %}">Clear</a>
+      <a href="{% url 'db' choice='all' %}">Get All</a>
+      <a href="{% url 'db' choice='first' %}">Get First</a>
+      <a href="{% url 'db' choice='last' %}">Get Last</a>
+    </h4>
+    
+    <h3>
       <a href="{% url 'index' %}">Back</a>
-    </h2>
+    </h3>
   </body>
 </html>

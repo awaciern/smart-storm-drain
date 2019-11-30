@@ -22,5 +22,5 @@ urlpatterns = [
     url('admin/', admin.site.urls),
     url('^$', views.index, name='index'),
     url('^ui', views.ui, name='ui'),
-    url('^db', views.db, name='db'),
+    url('^db/(?P<choice>\w+)', views.db, name='db'),
 ]
