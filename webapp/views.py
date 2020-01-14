@@ -1,9 +1,11 @@
 from django.shortcuts import render
-# from .models import Message
+from .models import Transmission
 # from .forms import MessageForm
 
 def index(request):
-    return render(request, 'index.html', context=None)
+    transmissions = Transmission.objects.all()
+
+    return render(request, 'index.html', {'transmissions': transmissions})
 
 def ui(request):
     return render(request, 'ui.html', context=None)

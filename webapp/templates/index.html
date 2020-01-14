@@ -3,6 +3,16 @@
 <html>
   <body>
     <h1>Smart Storm Drain</h1>
+    <h2>Transmissions:</h2>
+    {% for transmission in transmissions %}
+    <div>
+        <p>Timestamp: {{ transmission.timestamp }}</p>
+        <p>Device: {{ transmission.device }}</p>
+        <p>Depth: {{ transmission.depth }}</p>
+        <p>Flowrate: {{ transmission.flowrate }}</p>
+        <br>
+    </div>
+    {% endfor %}
     <h2>
       <a href="{% url 'ui' %}">Final User Interface Vision</a>
     </h2>
