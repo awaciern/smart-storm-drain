@@ -1,11 +1,20 @@
 from django.shortcuts import render
-from .models import Transmission
-# from .forms import MessageForm
+from .models import Device, Transmission
+from .forms import DeviceForm
 
 def index(request):
-    transmissions = Transmission.objects.all()
+    # Initially select the first device in the database
+    form = DeviceForm(initial = {'device': Device.objects.first()})
+    transmissions = Transmission.objects.filter(device=Device.objects.first())
 
-    return render(request, 'index.html', {'transmissions': transmissions})
+    # Once user selects a device, display its data
+    if request.method == 'POST':
+        device = request.POST.get('device')
+        form = DeviceForm(initial = {'device': device})
+        transmissions = Transmission.objects.filter(device=device)
+
+    # Render the html template with the necessary data passed in
+    return render(request, 'index.html', {'form': form, 'transmissions': transmissions})
 
 def ui(request):
     return render(request, 'ui.html', context=None)
