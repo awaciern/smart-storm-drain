@@ -29,3 +29,6 @@ class Transmission(models.Model):
     device = models.ForeignKey(Device, on_delete=models.CASCADE)
     depth = models.FloatField()
     flowrate = models.IntegerField(choices=LEVELS)
+
+    def __str__(self):
+        return '{0} at {1}'.format(self.device, self.timestamp)
