@@ -7,6 +7,7 @@
   </head>
   <body>
     <h1>Smart Storm Drain</h1>
+    <h2>{{ device.name }}</h2>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
@@ -27,6 +28,7 @@
       type: 'line',
       data: {
         datasets: [{
+          backgroundColor: 'rgba(0,102,255,0.5)',
           data: [
             {% for transmission in transmissions %}
             {
@@ -34,26 +36,34 @@
               y: {{ transmission.depth }}
             },
             {% endfor %}
-            // {
-            //   x: new Date("January 14, 2020 11:13:00"),
-            //   y: 1
-            // },
-            // {
-            //   x: new Date("January 15, 2020 11:13:00"),
-            //   y: 2
-            // },
-            // {
-            //   x: new Date("January 16, 2020 11:13:00"),
-            //   y: 3
-            // },
           ]
         }]
       },
       options: {
+        legend: {
+          display: false
+        },
+        title: {
+          display: true,
+          text: 'Water Depth of {{ device.name }}',
+          fontSize: 30
+        },
         scales: {
           xAxes: [{
-            type: 'time'
-          }]
+            type: 'time',
+            scaleLabel: {
+              display: true,
+              labelString: 'Datetime',
+              fontSize: 20
+            }
+          }],
+          yAxes: [{
+            scaleLabel: {
+              display: true,
+              labelString: 'Depth (ft)',
+              fontSize: 20
+            }
+          }],
         }
       }
   });
