@@ -1,6 +1,10 @@
 {% load staticfiles %}
 <!DOCTYPE html>
 <html>
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+  </head>
   <body>
     <h1>Smart Storm Drain</h1>
     {% block content %}
@@ -10,17 +14,47 @@
     </form>
     {% endblock %}
     <h2>Transmissions:</h2>
-    {% for transmission in transmissions %}
-    <div>
-        <p>Timestamp: {{ transmission.timestamp }}</p>
-        <p>Device: {{ transmission.device }}</p>
-        <p>Depth: {{ transmission.depth }}</p>
-        <p>Flowrate: {{ transmission.flowrate }}</p>
-        <br>
-    </div>
-    {% endfor %}
+    <canvas id="myChart"></canvas>
     <h2>
       <a href="{% url 'ui' %}">Final User Interface Vision</a>
     </h2>
   </body>
 </html>
+
+<script type="text/javascript">
+  var ctx = document.getElementById('myChart');
+  var myLineChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        datasets: [{
+          data: [
+            {% for transmission in transmissions %}
+            {
+              x: new Date("{{ transmission.timestamp.isoformat }}"),
+              y: {{ transmission.depth }}
+            },
+            {% endfor %}
+            // {
+            //   x: new Date("January 14, 2020 11:13:00"),
+            //   y: 1
+            // },
+            // {
+            //   x: new Date("January 15, 2020 11:13:00"),
+            //   y: 2
+            // },
+            // {
+            //   x: new Date("January 16, 2020 11:13:00"),
+            //   y: 3
+            // },
+          ]
+        }]
+      },
+      options: {
+        scales: {
+          xAxes: [{
+            type: 'time'
+          }]
+        }
+      }
+  });
+</script>
