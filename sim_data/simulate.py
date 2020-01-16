@@ -6,6 +6,8 @@ from webapp.models import Device, Transmission
 '''
 To run this script, open the server shell and run the following command:
 exec(open('sim_data/simulate.py').read())
+NOTE: The simulated data will associated with the first device in the db
+      (If there is no such device, the script will fail)
 '''
 
 # Device we are assigining this data to

@@ -88,13 +88,13 @@ DATABASES = {
     'default': {
         'ENGINE': 'sql_server.pyodbc',
         'NAME': 'smart-storm-drain-db',
-        'USER': 'ssdadmin@smart-storm-drain',
+        'USER': 'ssdadmin@smart-storm-drain-db',  # -db for DTU, else vCore
         'PASSWORD': 'SeniorDesign2019',
-        'HOST': 'smart-storm-drain.database.windows.net',
+        'HOST': 'smart-storm-drain-db.database.windows.net', # -db for DTU, else vCore
         'PORT': '1433',
         'OPTIONS': {
             'host_is_server': True,
-            'driver': 'ODBC Driver 17 for SQL Server',
+            'driver': 'ODBC Driver 17 for SQL Server',  # 13 if LOCAL, 17 if AZURE
         },
     },
 }
