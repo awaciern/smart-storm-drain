@@ -8,6 +8,7 @@
   <body>
     <h1>Smart Storm Drain</h1>
     <h2>Select a Device</h2>
+    <h3>{{ metric }}</h3>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
@@ -22,51 +23,57 @@
 </html>
 
 <script type="text/javascript">
-  // var ctx = document.getElementById('myChart');
-  // var myLineChart = new Chart(ctx, {
-  //     type: 'line',
-  //     data: {
-  //       datasets: [{
-  //         backgroundColor: 'rgba(0,102,255,0.5)',
-  //         borderColor: 'rgba(0,102,255,0.5)',
-  //         data: [
-  //           {% for transmission in transmissions %}
-  //           {
-  //             x: new Date("{{ transmission.timestamp.isoformat }}"),
-  //             y: {{ transmission.depth }}
-  //           },
-  //           {% endfor %}
-  //         ]
-  //       }]
-  //     },
-  //     options: {
-  //       legend: {
-  //         display: false
-  //       },
-  //       title: {
-  //         display: true,
-  //         text: 'Water Depth of {{ device.name }}',
-  //         fontSize: 30
-  //       },
-  //       scales: {
-  //         xAxes: [{
-  //           type: 'time',
-  //           scaleLabel: {
-  //             display: true,
-  //             labelString: 'Datetime',
-  //             fontSize: 20
-  //           }
-  //         }],
-  //         yAxes: [{
-  //           scaleLabel: {
-  //             display: true,
-  //             labelString: 'Depth (ft)',
-  //             fontSize: 20
-  //           }
-  //         }],
-  //       }
-  //     }
-  // });
+  // Get the chart reference in the template
+  var ctx = document.getElementById('myChart');
+
+  // Use metric value to determine which chart to render
+  if ('{{ metric }}' == 'depth') {
+    // Line chart for water depth
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [{
+            backgroundColor: 'rgba(0,102,255,0.5)',
+            borderColor: 'rgba(0,102,255,0.5)',
+            data: [
+              {% for transmission in transmissions %}
+              {
+                x: new Date("{{ transmission.timestamp.isoformat }}"),
+                y: {{ transmission.depth }}
+              },
+              {% endfor %}
+            ]
+          }]
+        },
+        options: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Water Depth of {{ device.name }}',
+            fontSize: 30
+          },
+          scales: {
+            xAxes: [{
+              type: 'time',
+              scaleLabel: {
+                display: true,
+                labelString: 'Datetime',
+                fontSize: 20
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Depth (ft)',
+                fontSize: 20
+              }
+            }],
+          }
+        }
+    });
+  }
 
   // Assigns proper point colors based on the flowrate
   var pointBackgroundColors = [
@@ -96,67 +103,69 @@
     {% endfor %}
   ];
 
-  var ctx = document.getElementById('myChart');
-  var myBarChart = new Chart(ctx, {
-      type: 'bar',
-      data: {
-        datasets: [{
-          backgroundColor: pointBackgroundColors,
-          borderColor: pointBorderColors,
-          borderWidth: 1,
-          data: [
-            {% for transmission in transmissions %}
-            {
-              x: new Date("{{ transmission.timestamp.isoformat }}"),
-              y: {{ transmission.flowrate }}
-            },
-            {% endfor %}
-          ],
-        }]
-      },
-      options: {
-        legend: {
-          display: false
+  if ('{{ metric }}' == 'flowrate') {
+    // Bar chart for flow rate
+    var myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          datasets: [{
+            backgroundColor: pointBackgroundColors,
+            borderColor: pointBorderColors,
+            borderWidth: 1,
+            data: [
+              {% for transmission in transmissions %}
+              {
+                x: new Date("{{ transmission.timestamp.isoformat }}"),
+                y: {{ transmission.flowrate }}
+              },
+              {% endfor %}
+            ],
+          }]
         },
-        title: {
-          display: true,
-          text: 'Flow Rate of {{ device.name }}',
-          fontSize: 30
-        },
-        scales: {
-          xAxes: [{
-            // offset: true,
-            type: 'time',
-            scaleLabel: {
-              display: true,
-              labelString: 'Datetime',
-              fontSize: 20
-            }
-          }],
-          yAxes: [{
-            scaleLabel: {
-              display: true,
-              labelString: 'Flow Rate',
-              fontSize: 20
-            },
-            ticks: {
-              beginAtZero: true,
-              suggestedMax: 3,
-              callback: function(label) {
-                switch(label) {
-                  case 0:
-                    return 'None';
-                  case 1:
-                    return 'Low';
-                  case 2:
-                    return 'Medium';
-                  case 3:
-                    return 'High';
+        options: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Flow Rate of {{ device.name }}',
+            fontSize: 30
+          },
+          scales: {
+            xAxes: [{
+              // offset: true,
+              type: 'time',
+              scaleLabel: {
+                display: true,
+                labelString: 'Datetime',
+                fontSize: 20
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Flow Rate',
+                fontSize: 20
+              },
+              ticks: {
+                beginAtZero: true,
+                suggestedMax: 3,
+                callback: function(label) {
+                  switch(label) {
+                    case 0:
+                      return 'None';
+                    case 1:
+                      return 'Low';
+                    case 2:
+                      return 'Medium';
+                    case 3:
+                      return 'High';
+                  }
                 }
               }
-            }
-          }],
-        },
-      }
-  });
+            }],
+          },
+        }
+    });
+  }
 </script>

@@ -1,22 +1,26 @@
 from django.shortcuts import render
 from .models import Device, Transmission
-from .forms import DeviceForm
+from .forms import SelectionForm
 
 def index(request):
-    # Initially select the first device in the database
-    form = DeviceForm(initial = {'device': Device.objects.first()})
+    # Initially select the water depth of the first device in the database
+    metric = 'depth'
+    form = SelectionForm(initial = {'device': Device.objects.first(),
+                                    'metric': 'depth'})
     device = Device.objects.first()
     transmissions = Transmission.objects.filter(device=device)
 
     # Once user selects a device, display its data
     if request.method == 'POST':
+        metric = request.POST.get('metric')
         device_id = request.POST.get('device')
-        form = DeviceForm(initial = {'device': device_id})
+        form = SelectionForm(initial = {'device': device_id, 'metric': 'depth'})
         device = Device.objects.get(pk=device_id)
         transmissions = Transmission.objects.filter(device=device)
 
     # Render the html template with the necessary data passed in
     return render(request, 'index.html', {'form': form,
+                                          'metric': metric,
                                           'device': device,
                                           'transmissions': transmissions})
 
