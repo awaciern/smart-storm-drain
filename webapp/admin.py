@@ -15,6 +15,6 @@ admin.site.register(Device, DeviceAdmin)
 
 
 class TransmissionAdmin(admin.ModelAdmin):
-    list_display = ['timestamp', 'device', 'depth', 'flowrate']
+    list_display = ['timestamp', 'device', 'depth', 'flowrate', 'voltage']
 
 admin.site.register(Transmission, TransmissionAdmin)
