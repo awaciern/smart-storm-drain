@@ -8,7 +8,9 @@ class SelectionForm(forms.ModelForm):
                                     empty_label=None)
 
     # Select button for display metrics
-    METRICS = [('depth', 'Water Depth'), ('flowrate', 'Flow Rate')]
+    METRICS = [('depth', 'Water Depth'),
+               ('flowrate', 'Flow Rate'),
+               ('voltage', 'Battery Voltage')]
     metric = forms.ChoiceField(choices=METRICS, widget=forms.Select)
 
 

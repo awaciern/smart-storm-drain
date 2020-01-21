@@ -14,7 +14,7 @@ def index(request):
     if request.method == 'POST':
         metric = request.POST.get('metric')
         device_id = request.POST.get('device')
-        form = SelectionForm(initial = {'device': device_id, 'metric': 'depth'})
+        form = SelectionForm(initial = {'device': device_id, 'metric': metric})
         device = Device.objects.get(pk=device_id)
         transmissions = Transmission.objects.filter(device=device)
 

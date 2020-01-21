@@ -7,8 +7,7 @@
   </head>
   <body>
     <h1>Smart Storm Drain</h1>
-    <h2>Select a Device</h2>
-    <h3>{{ metric }}</h3>
+    <h2>Select a Device and Metric</h2>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
@@ -165,6 +164,54 @@
               }
             }],
           },
+        }
+    });
+  }
+
+  if ('{{ metric }}' == 'voltage') {
+    // Line chart for battery voltage
+    var myLineChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          datasets: [{
+            backgroundColor: 'rgba(0,204,0,0.5)',
+            borderColor: 'rgba(0,204,0,0.5)',
+            data: [
+              {% for transmission in transmissions %}
+              {
+                x: new Date("{{ transmission.timestamp.isoformat }}"),
+                y: {{ transmission.voltage }}
+              },
+              {% endfor %}
+            ]
+          }]
+        },
+        options: {
+          legend: {
+            display: false
+          },
+          title: {
+            display: true,
+            text: 'Battery Voltage of {{ device.name }}',
+            fontSize: 30
+          },
+          scales: {
+            xAxes: [{
+              type: 'time',
+              scaleLabel: {
+                display: true,
+                labelString: 'Datetime',
+                fontSize: 20
+              }
+            }],
+            yAxes: [{
+              scaleLabel: {
+                display: true,
+                labelString: 'Voltage (V)',
+                fontSize: 20
+              }
+            }],
+          }
         }
     });
   }
