@@ -12,6 +12,7 @@ def index(request):
     dates = {}
     dates['start_day'] = Transmission.objects.filter(device=device).last().timestamp.astimezone(tz=None)
     dates['end_day'] = dates['start_day']
+    dates['max_day'] = dates['start_day']
     dates['min_day'] = Transmission.objects.filter(device=device).first().timestamp.astimezone(tz=None)
     transmissions = Transmission.objects.filter(device=device)
 

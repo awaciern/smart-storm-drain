@@ -36,7 +36,8 @@
       from = $( "#from" )
         .datepicker({
           changeMonth: true,
-          minDate: new Date("{{ dates.min_day.isoformat }}")
+          minDate: new Date("{{ dates.min_day.isoformat }}"),
+          maxDate: new Date("{{ dates.max_day.isoformat }}")
         })
         .datepicker("setDate", new Date("{{ dates.start_day.isoformat }}"))
         .on( "change", function() {
@@ -44,7 +45,8 @@
         }),
       to = $( "#to" ).datepicker({
         changeMonth: true,
-        minDate: new Date("{{ dates.min_day.isoformat }}")
+        minDate: new Date("{{ dates.min_day.isoformat }}"),
+        maxDate: new Date("{{ dates.max_day.isoformat }}")
       })
       .datepicker("setDate", new Date("{{ dates.end_day.isoformat }}"))
       .on( "change", function() {
