@@ -1,6 +1,9 @@
 from django import forms
-from .models import Device
+from .models import Device, Transmission
 
+
+# class DateInput(forms.DateInput):
+#     input_type = 'date'
 
 class SelectionForm(forms.ModelForm):
     # Dropdown menu listing devices
@@ -12,7 +15,6 @@ class SelectionForm(forms.ModelForm):
                ('flowrate', 'Flow Rate'),
                ('voltage', 'Battery Voltage')]
     metric = forms.ChoiceField(choices=METRICS, widget=forms.Select)
-
 
     class Meta:
         model = Device

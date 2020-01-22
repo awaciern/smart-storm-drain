@@ -4,13 +4,21 @@
   <head>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.13.0/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   </head>
   <body>
     <h1>Smart Storm Drain</h1>
     <h2>Select a Device and Metric</h2>
+    <h3>{{ dates.min_day }}</h3>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
+        <label for="from">From</label>
+        <input type="text" id="from" name="from">
+        <label for="to">to</label>
+        <input type="text" id="to" name="to">
         <button type="submit" class="save btn btn-default">Submit</button>
     </form>
     {% endblock %}
@@ -21,6 +29,42 @@
   </body>
 </html>
 
+<!--Datepicker JavaScript-->
+<script>
+  $( function() {
+    var dateFormat = "mm/dd/yy",
+      from = $( "#from" )
+        .datepicker({
+          changeMonth: true,
+          minDate: new Date("{{ dates.min_day.isoformat }}")
+        })
+        .datepicker("setDate", new Date("{{ dates.start_day.isoformat }}"))
+        .on( "change", function() {
+          to.datepicker( "option", "minDate", getDate( this ) );
+        }),
+      to = $( "#to" ).datepicker({
+        changeMonth: true,
+        minDate: new Date("{{ dates.min_day.isoformat }}")
+      })
+      .datepicker("setDate", new Date("{{ dates.end_day.isoformat }}"))
+      .on( "change", function() {
+        from.datepicker( "option", "maxDate", getDate( this ) );
+      });
+
+    function getDate( element ) {
+      var date;
+      try {
+        date = $.datepicker.parseDate( dateFormat, element.value );
+      } catch( error ) {
+        date = null;
+      }
+
+      return date;
+    }
+  } );
+</script>
+
+<!--Charts JavaScript-->
 <script type="text/javascript">
   // Get the chart reference in the template
   var ctx = document.getElementById('myChart');
