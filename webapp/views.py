@@ -25,7 +25,6 @@ def index(request):
 
     # Once user selects a device, metric, and date range; display its data
     if request.method == 'POST':
-        print(request.POST)
         metric = request.POST.get('metric')
         device_id = request.POST.get('device')
         start_day_raw = request.POST.get('from').split('/')
@@ -42,7 +41,6 @@ def index(request):
         device = Device.objects.get(pk=device_id)
         transmissions = Transmission.objects.filter(device=device,
                                                     timestamp__range=(dt1, dt2))
-        print(dates)
 
     # Render the html template with the necessary data passed in
     return render(request, 'index.html', {'form': form,

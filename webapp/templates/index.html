@@ -11,7 +11,6 @@
   <body>
     <h1>Smart Storm Drain</h1>
     <h2>Select a Device, Metric, and Date Range</h2>
-    <h3>{{ dates.min_day }}</h3>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
