@@ -10,12 +10,12 @@
   </head>
   <body>
     <h1>Smart Storm Drain</h1>
-    <h2>Select a Device and Metric</h2>
+    <h2>Select a Device, Metric, and Date Range</h2>
     <h3>{{ dates.min_day }}</h3>
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
-        <label for="from">From</label>
+        <label for="from">Date Range: from</label>
         <input type="text" id="from" name="from">
         <label for="to">to</label>
         <input type="text" id="to" name="to">
