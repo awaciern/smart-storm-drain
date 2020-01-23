@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 from random import random
-from webapp.models import Device, Transmission
+# from webapp.models import Device, Transmission
 
 
 '''
@@ -11,20 +11,21 @@ NOTE: The simulated data will associated with the first device in the db
 '''
 
 # Device we are assigining this data to
-device = Device.objects.first()
+# device = Device.objects.first()
 
 # Starting date for simulated data
-date = datetime(2019, 12, 1, 0, 0)
+date = datetime(2020, 1, 17, 0, 0)
 depth = 0.0
 flowrate = 0
+voltage
 
-# Loop through an entire day
-while date < datetime(2019, 12, 2):
-    # print('{0} - flowrate = {1}, depth = {2}'.format(date, flowrate, depth))
+# Loop until specified date
+while date < datetime(2020, 1, 24):
+    print('{0} - flowrate = {1}, depth = {2}, voltage={3}'.format(date, flowrate, depth, voltage))
 
     # Store the transmission in the database
-    Transmission.objects.create(timestamp=date, device=device, depth=depth,
-                                flowrate=flowrate)
+    # Transmission.objects.create(timestamp=date, device=device, depth=depth,
+    #                             flowrate=flowrate)
 
     # Transission interval increment
     date = date + timedelta(minutes=6)
