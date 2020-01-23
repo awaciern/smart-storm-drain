@@ -1,31 +1,31 @@
 from datetime import datetime, timedelta
 from random import random
-# from webapp.models import Device, Transmission
+from webapp.models import Device, Transmission
 
 
 '''
 To run this script, open the server shell and run the following command:
 exec(open('sim_data/simulate.py').read())
-NOTE: The simulated data will associated with the first device in the db
-      (If there is no such device, the script will fail)
+NOTE: The simulated data will be associated with the device specified by pk
 '''
 
 # Device we are assigining this data to
-# device = Device.objects.first()
+device = Device.objects.get(pk=1)
 
 # Starting date for simulated data
-date = datetime(2020, 1, 17, 0, 0)
+date = datetime(2020, 1, 16, 0, 0)
 depth = 0.0
 flowrate = 0
-voltage
+voltage = 4.0
 
 # Loop until specified date
-while date < datetime(2020, 1, 24):
-    print('{0} - flowrate = {1}, depth = {2}, voltage={3}'.format(date, flowrate, depth, voltage))
+while date < datetime(2020, 1, 23):
+    print('{0} - flowrate = {1}, depth = {2}, voltage={3}'
+          .format(date, flowrate, depth, voltage))
 
     # Store the transmission in the database
-    # Transmission.objects.create(timestamp=date, device=device, depth=depth,
-    #                             flowrate=flowrate)
+    Transmission.objects.create(timestamp=date, device=device, depth=depth,
+                                flowrate=flowrate, voltage=voltage)
 
     # Transission interval increment
     date = date + timedelta(minutes=6)
@@ -33,12 +33,21 @@ while date < datetime(2020, 1, 24):
     # Generate random event for the weather
     rand = random()
 
-    # 0.02 chance water starts flowing in harder
-    if rand > 0.98 and flowrate < 3:
-        flowrate += 1
+    # Decrease battery linearly
+    voltage -= 0.0001
 
-    # 0.25 chance it water decreases the rate it is flowing in
-    if flowrate > 0 and rand < 0.25:
+    # 0.02 chance it starts raining
+    if flowrate < 1:
+        if rand > 0.99:
+            flowrate += 1
+
+    # 0.15 chance it starts raining harder
+    elif flowrate < 3:
+        if rand > 0.85:
+            flowrate += 1
+
+    # 0.25 chance it starts raining less hard
+    if flowrate > 0 and rand < 0.3:
         flowrate -= 1
 
     # How water depth changes based on the flow rate
