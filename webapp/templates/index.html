@@ -177,7 +177,6 @@
           },
           scales: {
             xAxes: [{
-              // offset: true,
               type: 'time',
               scaleLabel: {
                 display: true,
@@ -247,13 +246,16 @@
                 display: true,
                 labelString: 'Datetime',
                 fontSize: 20
-              }
+              },
             }],
             yAxes: [{
               scaleLabel: {
                 display: true,
                 labelString: 'Voltage (V)',
                 fontSize: 20
+              },
+              ticks: {
+                suggestedMin: 2.9
               }
             }],
           }
