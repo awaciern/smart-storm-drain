@@ -10,16 +10,16 @@ NOTE: The simulated data will be associated with the device specified by pk
 '''
 
 # Device we are assigining this data to
-device = Device.objects.get(pk=1)
+device = Device.objects.get(pk=3)
 
 # Starting date for simulated data
-date = datetime(2020, 1, 16, 0, 0)
+date = datetime(2020, 1, 17, 0, 0)
 depth = 0.0
 flowrate = 0
-voltage = 4.0
+voltage = 4.05
 
 # Loop until specified date
-while date < datetime(2020, 1, 23):
+while date < datetime(2020, 1, 24):
     print('{0} - flowrate = {1}, depth = {2}, voltage={3}'
           .format(date, flowrate, depth, voltage))
 
@@ -27,18 +27,26 @@ while date < datetime(2020, 1, 23):
     Transmission.objects.create(timestamp=date, device=device, depth=depth,
                                 flowrate=flowrate, voltage=voltage)
 
+    # Allow for a transmission rate change in the middle of the data
+    if date > datetime(2020, 1, 20, 11, 46):
+        m = 15
+        v = 0.0002
+    else:
+        m = 6
+        v = 0.0001
+
     # Transission interval increment
-    date = date + timedelta(minutes=6)
+    date = date + timedelta(minutes=m)
 
     # Generate random event for the weather
     rand = random()
 
     # Decrease battery linearly
-    voltage -= 0.0001
+    voltage -= v
 
     # 0.02 chance it starts raining
     if flowrate < 1:
-        if rand > 0.99:
+        if rand > 0.995:
             flowrate += 1
 
     # 0.15 chance it starts raining harder
