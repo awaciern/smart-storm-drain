@@ -26,23 +26,44 @@ def index(request):
     # Once user selects a device, metric, and date range; display its data
     if request.method == 'POST':
         metric = request.POST.get('metric')
-        device_id = request.POST.get('device')
+        device = Device.objects.get(pk=request.POST.get('device'))
         start_day_raw = request.POST.get('from').split('/')
         dates['start_day'] = datetime(int(start_day_raw[2]),
                                       int(start_day_raw[0]),
-                                      int(start_day_raw[1]))
+                                      int(start_day_raw[1])).astimezone(tz=None)
         end_day_raw = request.POST.get('to').split('/')
         dates['end_day'] = datetime(int(end_day_raw[2]),
                                     int(end_day_raw[0]),
-                                    int(end_day_raw[1]))
+                                    int(end_day_raw[1])).astimezone(tz=None)
+        dates['max_day'] = Transmission.objects.filter(device=device)\
+                                       .last().timestamp.astimezone(tz=None)
+        dates['min_day'] = Transmission.objects.filter(device=device)\
+                                       .first().timestamp.astimezone(tz=None)
+        if dates['start_day'] > dates['max_day']:  # message???
+           dates['start_day'] = datetime(dates['max_day'].year,
+                                         dates['max_day'].month,
+                                         dates['max_day'].day).astimezone(tz=None)
+           dates['end_day'] = (datetime(dates['max_day'].year,
+                                        dates['max_day'].month,
+                                        dates['max_day'].day)
+                               + timedelta(days=1)).astimezone(tz=None)
+        if dates['end_day'] < dates['min_day']:  # message???
+           dates['start_day'] = datetime(dates['max_day'].year,
+                                         dates['max_day'].month,
+                                         dates['max_day'].day).astimezone(tz=None)
+           dates['end_day'] = (datetime(dates['max_day'].year,
+                                        dates['max_day'].month,
+                                        dates['max_day'].day)
+                               + timedelta(days=1)).astimezone(tz=None)
         dt1 = dates['start_day']
         dt2 = dates['end_day'] + timedelta(days=1)
-        form = SelectionForm(initial = {'device': device_id, 'metric': metric})
-        device = Device.objects.get(pk=device_id)
+        form = SelectionForm(initial = {'device': device, 'metric': metric})
         transmissions = Transmission.objects.filter(device=device,
                                                     timestamp__range=(dt1, dt2))
 
     # Render the html template with the necessary data passed in
+    print(dates)
+    print(device)
     return render(request, 'index.html', {'form': form,
                                           'metric': metric,
                                           'device': device,
