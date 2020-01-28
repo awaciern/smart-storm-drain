@@ -13,13 +13,13 @@ NOTE: The simulated data will be associated with the device specified by pk
 device = Device.objects.get(pk=3)
 
 # Starting date for simulated data
-date = datetime(2020, 1, 17, 0, 0)
+date = datetime(2020, 1, 1, 0, 0)
 depth = 0.0
 flowrate = 0
 voltage = 4.05
 
 # Loop until specified date
-while date < datetime(2020, 1, 24):
+while date < datetime(2020, 1, 8):
     print('{0} - flowrate = {1}, depth = {2}, voltage={3}'
           .format(date, flowrate, depth, voltage))
 
@@ -28,7 +28,7 @@ while date < datetime(2020, 1, 24):
                                 flowrate=flowrate, voltage=voltage)
 
     # Allow for a transmission rate change in the middle of the data
-    if date > datetime(2020, 1, 20, 11, 46):
+    if date > datetime(2020, 1, 4, 11, 59):
         m = 15
         v = 0.0002
     else:
