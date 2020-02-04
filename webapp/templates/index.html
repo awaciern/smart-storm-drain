@@ -4,8 +4,12 @@
   <head>
     <script src="{% static 'js/moment.js' %}"></script>
     <script src="{% static 'js/chart.js' %}"></script>
-    <script src="{% static 'js/jquery-1.12.4.js' %}"></script>
-    <script src="{% static 'js/jquery-ui.js' %}"></script>
+    <!-- <script src="{% static 'js/jquery-1.12.4.js' %}"></script>
+    <script src="{% static 'js/jquery-ui.js' %}"></script> -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     <link rel="stylesheet" href="{% static 'css/jquery-ui.css' %}">
   </head>
   <body>
@@ -14,10 +18,11 @@
     {% block content %}
     <form method="POST" class="post-form">{% csrf_token %}
         {{ form.as_p }}
-        <label for="from">Date Range: from</label>
+        <!-- <label for="from">Date Range: from</label>
         <input type="text" id="from" name="from">
         <label for="to">to</label>
-        <input type="text" id="to" name="to">
+        <input type="text" id="to" name="to"> -->
+        <input type="text" name="datetimes" />
         <br>
         <br>
         <button type="submit" class="save btn btn-default">Submit</button>
@@ -31,7 +36,7 @@
 </html>
 
 <!--Datepicker JavaScript-->
-<script>
+<!-- <script>
   $( function() {
     var dateFormat = "mm/dd/yy",
       from = $( "#from" )
@@ -65,6 +70,20 @@
       return date;
     }
   } );
+</script> -->
+
+<!--DateTimepicker JavaScript-->
+<script>
+  $(function() {
+    $('input[name="datetimes"]').daterangepicker({
+      timePicker: true,
+      startDate: moment().startOf('hour'),
+      endDate: moment().startOf('hour').add(32, 'hour'),
+      locale: {
+        format: 'M/DD hh:mm A'
+      }
+    });
+  });
 </script>
 
 <!--Charts JavaScript-->
