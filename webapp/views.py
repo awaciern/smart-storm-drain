@@ -33,8 +33,6 @@ def index(request):
         dates['min_day'] = Transmission.objects.filter(device=device)\
                                        .first().timestamp
 
-        print(dates)
-
         # Start date is past last transission -> display most recent day data
         if dates['start_day'] > dates['max_day']:  # message???
             dates['end_day'] = Transmission.objects.filter(device=device)\
@@ -78,8 +76,6 @@ def index(request):
         # Start date is past last transission -> display most recent day data
 
     form = SelectionForm(initial = {'device': device, 'metric': metric})
-
-    print(dates)
 
     # Get the transimssion data for display from db based on date range
     transmissions = Transmission.objects.filter(device=device,
