@@ -21,7 +21,7 @@
         <button type="submit" class="save btn btn-default">Submit</button>
     </form>
     {% endblock %}
-    <canvas id="myChart"></canvas>
+    <canvas id="myChart" height="85"></canvas>
     <h2>
       <a href="{% url 'ui' %}">Final User Interface Vision</a>
     </h2>
@@ -69,6 +69,8 @@
           }]
         },
         options: {
+          // responsive: true,
+          // maintainAspectRatio: false,
           legend: {
             display: false
           },
