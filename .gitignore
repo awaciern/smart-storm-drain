@@ -5,3 +5,4 @@ env
 db.sqlite3
 /static
 ignore
+__init__
