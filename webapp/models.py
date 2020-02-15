@@ -4,8 +4,8 @@ from django.utils import timezone
 
 class Device(models.Model):
     name = models.CharField(max_length=100)
-    # location will be needed
-    # Health status will be needed too???
+    latitude = models.FloatField()
+    longitude = models.FloatField()
 
     def __str__(self):
         return self.name
