@@ -5,10 +5,32 @@ from .models import Device, Transmission
 from .forms import SelectionForm
 
 def index(request):
-    # Create geological locations dict
+    # Create geological and health locations dict
     locations = {}
     for loc in Device.objects.all():
-        locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude}
+        # Eventually, there will be logic here to determine health from metrics
+        # Right now, I am just assigning them
+        loc_health = 0
+        if loc.pk == 1:
+            loc_health = 0
+        elif loc.pk == 2:
+            loc_health = 1
+        elif loc.pk == 3:
+            loc_health = 3
+
+        # Assign values to dict
+        locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude,
+                          'health': loc_health}
+
+    # Create overall health dict
+    health = {}
+    # Eventually, there will be logic here to determine health from metrics
+    # Right now, I am just assigning values
+    health['overall'] = 2
+    health['healthy'] = 1
+    health['flowing'] = 1
+    health['clogged'] = 0
+    health['offline'] = 1
 
     # Initialize empty date dict
     dates = {}
@@ -88,12 +110,16 @@ def index(request):
                                                 (dates['start_day'],
                                                 dates['end_day']))
 
+    # Find the selected device health for display
+    device_health = locations[device]['health']
+
     # Render the html template and pass in the required data
     return render(request, 'index.html', {'form': form,
                                           'locations': locations,
-                                          # 'location_last': location_last,
+                                          'health': health,
                                           'metric': metric,
                                           'device': device,
+                                          'device_health': device_health,
                                           'dates': dates,
                                           'transmissions': transmissions})
 
