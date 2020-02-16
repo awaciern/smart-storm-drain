@@ -5,6 +5,11 @@ from .models import Device, Transmission
 from .forms import SelectionForm
 
 def index(request):
+    # Create geological locations dict
+    locations = {}
+    for loc in Device.objects.all():
+        locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude}
+
     # Initialize empty date dict
     dates = {}
 
@@ -85,6 +90,8 @@ def index(request):
 
     # Render the html template and pass in the required data
     return render(request, 'index.html', {'form': form,
+                                          'locations': locations,
+                                          # 'location_last': location_last,
                                           'metric': metric,
                                           'device': device,
                                           'dates': dates,
