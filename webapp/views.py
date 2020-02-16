@@ -80,8 +80,9 @@ def index(request):
 
                 # Start date is past last transission -> display most recent day data
                 if dates['start_day'] > dates['max_day']:  # message???
-                    dates['end_day'] = Transmission.objects.filter(device=device)\
-                                                           .last().timestamp
+                    dates['end_day'] = Transmission.objects\
+                                                   .filter(device=device)\
+                                                   .last().timestamp
                     eastern_date = dates['end_day'] - timedelta(hours=5)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
@@ -91,8 +92,9 @@ def index(request):
 
                 # End date is before first transission -> display most recent day data
                 if dates['end_day'] < dates['min_day']:  # message???
-                    dates['end_day'] = Transmission.objects.filter(device=device)\
-                                                           .last().timestamp
+                    dates['end_day'] = Transmission.objects\
+                                                   .filter(device=device)\
+                                                   .last().timestamp
                     eastern_date = dates['end_day'] - timedelta(hours=5)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
@@ -103,8 +105,8 @@ def index(request):
             # If there is NOT date data from user input
             else:
                 # Initially set date range of most recent day's data
-                dates['end_day'] = Transmission.objects.filter(device=device).last()\
-                                                       .timestamp
+                dates['end_day'] = Transmission.objects.filter(device=device)\
+                                                       .last().timestamp
                 eastern_date = dates['end_day'] - timedelta(hours=5)
                 dates['start_day'] = datetime(eastern_date.year,
                                               eastern_date.month,
@@ -129,8 +131,8 @@ def index(request):
         # If the device has never been online, no need to gather date info
         if device_health != 4:
             # Initially set date range of most recent day's data
-            dates['end_day'] = Transmission.objects.filter(device=device).last()\
-                                                   .timestamp
+            dates['end_day'] = Transmission.objects.filter(device=device)\
+                                                   .last().timestamp
             eastern_date = dates['end_day'] - timedelta(hours=5)
             dates['start_day'] = datetime(eastern_date.year,
                                           eastern_date.month,
