@@ -10,16 +10,16 @@ NOTE: The simulated data will be associated with the device specified by pk
 '''
 
 # Device we are assigining this data to
-device = Device.objects.get(pk=3)
+device = Device.objects.get(pk=5)
 
 # Starting date for simulated data
-date = datetime(2020, 1, 1, 0, 0)
+date = datetime(2020, 1, 17, 0, 0)
 depth = 0.0
 flowrate = 0
-voltage = 4.05
+voltage = 3.90
 
 # Loop until specified date
-while date < datetime(2020, 1, 8):
+while date < datetime(2020, 1, 24):
     print('{0} - flowrate = {1}, depth = {2}, voltage={3}'
           .format(date, flowrate, depth, voltage))
 
@@ -27,43 +27,42 @@ while date < datetime(2020, 1, 8):
     Transmission.objects.create(timestamp=date, device=device, depth=depth,
                                 flowrate=flowrate, voltage=voltage)
 
-    # Allow for a transmission rate change in the middle of the data
-    if date > datetime(2020, 1, 4, 11, 59):
-        m = 15
-        v = 0.0002
-    else:
-        m = 6
-        v = 0.0001
-
     # Transission interval increment
-    date = date + timedelta(minutes=m)
-
-    # Generate random event for the weather
-    rand = random()
+    date = date + timedelta(minutes=6)
 
     # Decrease battery linearly
-    voltage -= v
+    voltage -= 0.0001
 
-    # 0.02 chance it starts raining
-    if flowrate < 1:
-        if rand > 0.995:
-            flowrate += 1
+    # Start flooding at the end of the dataset
+    if date > datetime(2020, 1, 23, 8):
+        flowrate = 3
 
-    # 0.15 chance it starts raining harder
-    elif flowrate < 3:
-        if rand > 0.85:
-            flowrate += 1
+    # Regular weather behavior
+    else:
+        # Generate random event for the weather
+        rand = random()
 
-    # 0.25 chance it starts raining less hard
-    if flowrate > 0 and rand < 0.3:
-        flowrate -= 1
+        # 0.02 chance it starts raining
+        if flowrate < 1:
+            if rand > 0.995:
+                flowrate += 1
 
-    # How water depth changes based on the flow rate
-    if flowrate == 0 and depth > 0.01:
-        depth -= 0.01
-    if flowrate == 1:
-        depth += 0.05
-    if flowrate == 2:
-        depth += 0.1
-    if flowrate == 3:
-        depth += 0.2
+        # 0.15 chance it starts raining harder
+        elif flowrate < 3:
+            if rand > 0.85:
+                flowrate += 1
+
+        # 0.25 chance it starts raining less hard
+        if flowrate > 0 and rand < 0.3:
+            flowrate -= 1
+
+    # How water depth changes based on the flow rate (floods at 5 ft)
+    if depth < 5:
+        if flowrate == 0 and depth > 0.01:
+            depth -= 0.01
+        if flowrate == 1:
+            depth += 0.05
+        if flowrate == 2:
+            depth += 0.1
+        if flowrate == 3:
+            depth += 0.2
