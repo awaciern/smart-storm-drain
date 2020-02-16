@@ -34,7 +34,7 @@ def index(request):
     health['overall'] = 2
     health['healthy'] = 1
     health['flowing'] = 1
-    health['clogged'] = 0
+    health['flooded'] = 0
     health['offline'] = 1
 
     # Initialize empty date dict
