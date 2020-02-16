@@ -5,8 +5,17 @@ from .models import Device, Transmission
 from .forms import SelectionForm
 
 def index(request):
-    # Create geological and health locations dict
+    # Create geological locations dict and health dict
     locations = {}
+    health = {}
+
+    # Initialize health dict counters
+    health['overall'] = 2
+    health['healthy'] = 0
+    health['flowing'] = 0
+    health['flooded'] = 0
+    health['offline'] = 0
+
     for loc in Device.objects.all():
         loc_health = 0  # default health: healthy
 
@@ -18,24 +27,23 @@ def index(request):
         # Right now, I am just assigning them
         if loc.pk == 1:
             loc_health = 0  # healthy
+            health['healthy'] += 1
         elif loc.pk == 2:
             loc_health = 1  # collecting water
+            health['flowing'] += 1
         elif loc.pk == 3:
             loc_health = 3  # offline, but has been online before
+            health['offline'] += 1
+        elif loc.pk == 4:
+            loc_health = 4  # offline, has never been online before
+            health['offline'] += 1
+        elif loc.pk == 5:
+            loc_health = 2  # flooded
+            health['flooded'] += 1
 
         # Assign values to dict
         locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude,
                           'health': loc_health}
-
-    # Create overall health dict
-    health = {}
-    # Eventually, there will be logic here to determine health from metrics
-    # Right now, I am just assigning values
-    health['overall'] = 2
-    health['healthy'] = 1
-    health['flowing'] = 1
-    health['flooded'] = 0
-    health['offline'] = 1
 
     # Initialize empty date dict
     dates = {}
@@ -53,7 +61,6 @@ def index(request):
         if device_health != 4:
             # If there is date data from user input
             if request.POST.get('datetimes'):
-                print(request.POST.get('datetimes'))
                 # POST date data from JS form requiring processing
                 date_list_raw = request.POST.get('datetimes').split('-')
                 dates['start_day'] = datetime.strptime(date_list_raw[0],
@@ -70,8 +77,6 @@ def index(request):
                                                .last().timestamp
                 dates['min_day'] = Transmission.objects.filter(device=device)\
                                                .first().timestamp
-
-                print(dates)
 
                 # Start date is past last transission -> display most recent day data
                 if dates['start_day'] > dates['max_day']:  # message???
@@ -149,8 +154,6 @@ def index(request):
                                                 dates['end_day']))
     else:
         transmissions = []
-
-    print(dates)
 
     # Render the html template and pass in the required data
     return render(request, 'index.html', {'form': form,
