@@ -53,16 +53,17 @@ def index(request):
         if device_health != 4:
             # If there is date data from user input
             if request.POST.get('datetimes'):
+                print(request.POST.get('datetimes'))
                 # POST date data from JS form requiring processing
                 date_list_raw = request.POST.get('datetimes').split('-')
                 dates['start_day'] = datetime.strptime(date_list_raw[0],
                                                        '%m/%d/%y %I:%M %p ')\
                                              .replace(tzinfo=timezone('UTC'))\
-                                             - timedelta(hours=19)
+                                             + timedelta(hours=5)
                 dates['end_day'] = datetime.strptime(date_list_raw[1],
                                                      ' %m/%d/%y %I:%M %p')\
                                            .replace(tzinfo=timezone('UTC'))\
-                                           - timedelta(hours=19)
+                                           + timedelta(hours=5)
 
                 # Find max and min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
@@ -70,36 +71,41 @@ def index(request):
                 dates['min_day'] = Transmission.objects.filter(device=device)\
                                                .first().timestamp
 
+                print(dates)
+
                 # Start date is past last transission -> display most recent day data
                 if dates['start_day'] > dates['max_day']:  # message???
                     dates['end_day'] = Transmission.objects.filter(device=device)\
                                                            .last().timestamp
-                    dates['start_day'] = datetime(dates['end_day'].year,
-                                                 dates['end_day'].month,
-                                                 dates['end_day'].day,
-                                                 tzinfo=timezone('UTC'))\
-                                                 - timedelta(hours=19)
+                    eastern_date = dates['end_day'] - timedelta(hours=5)
+                    dates['start_day'] = datetime(eastern_date.year,
+                                                  eastern_date.month,
+                                                  eastern_date.day,
+                                                  tzinfo=timezone('UTC'))\
+                                                  + timedelta(hours=5)
 
                 # End date is before first transission -> display most recent day data
                 if dates['end_day'] < dates['min_day']:  # message???
                     dates['end_day'] = Transmission.objects.filter(device=device)\
                                                            .last().timestamp
-                    dates['start_day'] = datetime(dates['end_day'].year,
-                                                  dates['end_day'].month,
-                                                  dates['end_day'].day,
+                    eastern_date = dates['end_day'] - timedelta(hours=5)
+                    dates['start_day'] = datetime(eastern_date.year,
+                                                  eastern_date.month,
+                                                  eastern_date.day,
                                                   tzinfo=timezone('UTC'))\
-                                                  - timedelta(hours=19)
+                                                  + timedelta(hours=5)
 
             # If there is NOT date data from user input
             else:
                 # Initially set date range of most recent day's data
                 dates['end_day'] = Transmission.objects.filter(device=device).last()\
                                                        .timestamp
-                dates['start_day'] = datetime(dates['end_day'].year,
-                                              dates['end_day'].month,
-                                              dates['end_day'].day,
+                eastern_date = dates['end_day'] - timedelta(hours=5)
+                dates['start_day'] = datetime(eastern_date.year,
+                                              eastern_date.month,
+                                              eastern_date.day,
                                               tzinfo=timezone('UTC'))\
-                                              - timedelta(hours=19)
+                                              + timedelta(hours=5)
                 # Find min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
                                                .last().timestamp
@@ -120,11 +126,12 @@ def index(request):
             # Initially set date range of most recent day's data
             dates['end_day'] = Transmission.objects.filter(device=device).last()\
                                                    .timestamp
-            dates['start_day'] = datetime(dates['end_day'].year,
-                                          dates['end_day'].month,
-                                          dates['end_day'].day,
+            eastern_date = dates['end_day'] - timedelta(hours=5)
+            dates['start_day'] = datetime(eastern_date.year,
+                                          eastern_date.month,
+                                          eastern_date.day,
                                           tzinfo=timezone('UTC'))\
-                                          - timedelta(hours=19)
+                                          + timedelta(hours=5)
             # Find min transmission dates based on device selected
             dates['max_day'] = Transmission.objects.filter(device=device)\
                                            .last().timestamp
@@ -142,6 +149,8 @@ def index(request):
                                                 dates['end_day']))
     else:
         transmissions = []
+
+    print(dates)
 
     # Render the html template and pass in the required data
     return render(request, 'index.html', {'form': form,
