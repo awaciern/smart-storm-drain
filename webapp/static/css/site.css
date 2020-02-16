@@ -36,6 +36,14 @@
   display: inline-block;
 }
 
+.dot4 {
+  height: 100px;
+  width: 100px;
+  background-color: #000000;
+  border-radius: 50%;
+  display: inline-block;
+}
+
 .col1 {
   float: left;
   width: 35%;

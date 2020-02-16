@@ -42,6 +42,17 @@
           <td>
             <h3>Selected Device Health:</h3>
             <p>{{ device }}</p>
+            {% if device_health == 0 %}
+              <p>Status: Healthy<p>
+            {% elif device_health == 1 %}
+              <p>Status: Collecting Water<p>
+            {% elif device_health == 2 %}
+              <p>Status: Clogged<p>
+            {% elif device_health == 3 %}
+              <p>Status: Offline (Previously Online)<p>
+            {% else %}
+              <p>Status: Offline (Never Online)<p>
+            {% endif %}
           </td>
         </tr>
       </table>
@@ -56,21 +67,24 @@
       {% block content %}
       <form method="POST" class="post-form">{% csrf_token %}
           {{ form.as_p }}
-          <label>DateTime: </label>
-          <input type="text" name="datetimes" size="32" label="DateTime"/>
-          <br>
-          <br>
+          {% if device_health != 4 %}
+            <label>DateTime: </label>
+            <input type="text" name="datetimes" size="32" label="DateTime"/>
+            <br>
+            <br>
+          {% endif %}
           <button type="submit" class="save btn btn-default">Submit</button>
       </form>
       {% endblock %}
-      <canvas id="myChart" height="85"></canvas>
+      {% if device_health != 4 %}
+        <canvas id="myChart" height="85"></canvas>
+      {% else %}
+        <h2><i>{{ device }} has no transmission data to display!!!</i></h2>
+      {% endif %}
       <h2>
         <a href="{% url 'ui' %}">Final User Interface Vision</a>
       </h2>
     </div>
-    {% for location in locations %}
-      <p>{{ location.health }}</p>
-    {% endfor %}
   </body>
 </html>
 
@@ -91,6 +105,7 @@
 </script>
 
 <!--Charts JavaScript-->
+{% if device_health != 4 %}
 <script type="text/javascript">
   // Get the chart reference in the template
   var ctx = document.getElementById('myChart');
@@ -290,6 +305,7 @@
     });
   }
 </script>
+{% endif %}
 
 <!--GeoMap JavaScript-->
 <script type="text/javascript">
@@ -337,6 +353,14 @@
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
   });
+  var blackIcon = new L.Icon({
+    iconUrl: "{% static 'img/marker-icon-black.png' %}",
+    shadowUrl: "{% static 'img/marker-shadow.png' %}",
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+  });
 
   // Puts the device markers on the map with the proper health status
   {% for key, value in locations.items %}
@@ -347,7 +371,9 @@
     {% elif value.health == 2 %}
       L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: redIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Clogged");
     {% elif value.health == 3 %}
-      L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: greyIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Offline");
+      L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: greyIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Offline (Previously Online)");
+    {% else %}
+      L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: blackIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Offline (Never Online)");
     {% endif %}
   {% endfor %}
 
