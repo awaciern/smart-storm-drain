@@ -3,6 +3,10 @@ from datetime import datetime, timedelta
 from pytz import timezone
 from .models import Device, Transmission
 from .forms import SelectionForm
+from django.views.decorators.csrf import csrf_exempt
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
+from django.conf import settings
+import json
 
 def index(request):
     # Create geological locations dict and health dict
@@ -170,3 +174,65 @@ def index(request):
 
 def ui(request):
     return render(request, 'ui.html', context=None)
+
+
+@csrf_exempt
+def gateway(request):
+    # This URL will be hit with POST data from the gateway and store it in db
+    if request.method == 'POST':
+        # Convert the POST data into a python dictionary
+        # print(request.POST.get('request'))
+        req_dict = json.loads(request.POST.get('request'))
+        print(req_dict)
+
+        # Check the downlink_url for the "password"
+        if 'downlink_url' not in req_dict:
+            return HttpResponseForbidden('Authentication Failure')
+        if req_dict['downlink_url'] == settings.DL_URL_PW:
+            # Get the device id if available
+            if 'dev_id' not in req_dict:
+                return HttpResponse('ERROR: No device identified!')
+
+            # Check if the device id matches a device in the db
+            device_list = []
+            for device in Device.objects.all():
+                device_list.append(device.name)
+            if req_dict['dev_id'] in device_list:
+                # Get the device from the database
+                device = Device.objects.get(name=req_dict['dev_id'])
+
+                # Check if the POST data has needed payload fields
+                if 'payload_fields' not in req_dict:
+                    return HttpResponse('ERROR: Data has no payload fields!')
+                payload_dict = req_dict['payload_fields']
+                if 'distance_inches' not in payload_dict or 'luminosity' not in payload_dict:
+                   return HttpResponse('ERROR: Data lacks needed payload fields!')
+                # print(payload_dict['distance_inches'])
+                # print(payload_dict['luminosity'])
+
+                # Check if the POST data has needed metadata
+                if 'metadata' not in req_dict:
+                    return HttpResponse('ERROR: Data has no metadata!')
+                metadata_dict = req_dict['metadata']
+                if 'time' not in metadata_dict:
+                    return HttpResponse('ERROR: Data lacks needed metadata!')
+                # print(metadata_dict['time'])
+
+                # POST data is good -> store transission in db
+                Transmission.objects.create(timestamp=metadata_dict['time'],
+                                            device=device,
+                                            depth=payload_dict['distance_inches'],
+                                            flowrate=0,
+                                            voltage=payload_dict['luminosity'])
+
+                # Return success message
+                return HttpResponse('SUCCESS: Transmission recieved and stoeed')
+            # If no device match stop and return error message
+            else:
+                return HttpResponse('ERROR: Device ID is not recognized!')
+        else:
+            return HttpResponseForbidden('Authentication Failure')
+
+    # Only POST methods can hit this URL
+    else:
+        return HttpResponseNotFound()
