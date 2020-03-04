@@ -78,15 +78,18 @@ def index(request):
 
                 # Find max and min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
-                                               .last().timestamp
+                                               .order_by('-timestamp')[0]\
+                                               .timestamp
                 dates['min_day'] = Transmission.objects.filter(device=device)\
-                                               .first().timestamp
+                                               .order_by('timestamp')[0]\
+                                               .timestamp
 
                 # Start date is past last transission -> display most recent day data
                 if dates['start_day'] > dates['max_day']:  # message???
                     dates['end_day'] = Transmission.objects\
                                                    .filter(device=device)\
-                                                   .last().timestamp
+                                                   .order_by('-timestamp')[0]\
+                                                   .timestamp
                     eastern_date = dates['end_day'] - timedelta(hours=5)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
@@ -98,7 +101,8 @@ def index(request):
                 if dates['end_day'] < dates['min_day']:  # message???
                     dates['end_day'] = Transmission.objects\
                                                    .filter(device=device)\
-                                                   .last().timestamp
+                                                   .order_by('-timestamp')[0]\
+                                                   .timestamp
                     eastern_date = dates['end_day'] - timedelta(hours=5)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
@@ -110,7 +114,8 @@ def index(request):
             else:
                 # Initially set date range of most recent day's data
                 dates['end_day'] = Transmission.objects.filter(device=device)\
-                                                       .last().timestamp
+                                               .order_by('-timestamp')[0]\
+                                               .timestamp
                 eastern_date = dates['end_day'] - timedelta(hours=5)
                 dates['start_day'] = datetime(eastern_date.year,
                                               eastern_date.month,
@@ -119,9 +124,11 @@ def index(request):
                                               + timedelta(hours=5)
                 # Find min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
-                                               .last().timestamp
+                                               .order_by('-timestamp')[0]\
+                                               .timestamp
                 dates['min_day'] = Transmission.objects.filter(device=device)\
-                                               .first().timestamp
+                                               .order_by('timestamp')[0]\
+                                               .timestamp
 
     # User has not yet submitted data; is initially visiting the page
     else:
@@ -143,11 +150,12 @@ def index(request):
                                           eastern_date.day,
                                           tzinfo=timezone('UTC'))\
                                           + timedelta(hours=5)
+
             # Find min transmission dates based on device selected
             dates['max_day'] = Transmission.objects.filter(device=device)\
-                                           .last().timestamp
+                                           .order_by('-timestamp')[0].timestamp
             dates['min_day'] = Transmission.objects.filter(device=device)\
-                                           .first().timestamp
+                                           .order_by('timestamp')[0].timestamp
 
     # Create the form the user will see
     form = SelectionForm(initial = {'device': device, 'metric': metric})
@@ -162,6 +170,7 @@ def index(request):
         transmissions = []
 
     # Render the html template and pass in the required data
+    print(dates)
     return render(request, 'index.html', {'form': form,
                                           'locations': locations,
                                           'health': health,
