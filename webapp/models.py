@@ -26,3 +26,9 @@ class Transmission(models.Model):
 
     def __str__(self):
         return '{0} at {1}'.format(self.device, self.timestamp)
+
+
+class GatewayLog(models.Model):
+    raw_data = models.TextField()
+    message = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)

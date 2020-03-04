@@ -1,11 +1,5 @@
 from django.contrib import admin
-from .models import Device, Transmission
-
-
-# class MessageAdmin(admin.ModelAdmin):
-#     fields = ['text', 'date']
-#
-# admin.site.register(Message, MessageAdmin)
+from .models import Device, Transmission, GatewayLog
 
 
 class DeviceAdmin(admin.ModelAdmin):
@@ -18,3 +12,9 @@ class TransmissionAdmin(admin.ModelAdmin):
     list_display = ['timestamp', 'device', 'depth', 'flowrate', 'voltage']
 
 admin.site.register(Transmission, TransmissionAdmin)
+
+
+class GatewayLogAdmin(admin.ModelAdmin):
+    list_display = ['timestamp', 'message', 'raw_data']
+
+admin.site.register(GatewayLog, GatewayLogAdmin)
