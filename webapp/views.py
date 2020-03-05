@@ -192,7 +192,7 @@ def gateway(request):
     if request.method == 'POST':
         # For logging and debugging the gateway
         raw_data = unquote(request.body.decode('utf-8'))
-        #raw_data = raw_data.replace('+', '').replace('request=', '')
+        raw_data = raw_data.replace('+', '').replace('request=', '')
         #print(raw_data)
         log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
 
@@ -213,79 +213,106 @@ def gateway(request):
         # Check the downlink_url for the "password"
         if 'downlink_url' not in req_dict:
             # GatewayLog.objects.create(raw_data=raw_data, message='Authentication Failure')
-            log.message = 'Authentication Failure'
+            log.message = 'Authentication Failure1'
             log.save()
             return HttpResponseForbidden('Authentication Failure')
         if settings.DL_URL_KEY in req_dict['downlink_url']:
-            try:
-                # Get the device id if available
-                if 'dev_id' not in req_dict:
-                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: No device identified!')
-                    log.message = 'ERROR: No device identified!'
-                    log.save()
-                    return HttpResponse('ERROR: No device identified!')
-
-                # Check if the device id matches a device in the db
-                device_list = []
-                for device in Device.objects.all():
-                    device_list.append(device.name)
-                if req_dict['dev_id'] in device_list:
-                    # Get the device from the database
-                    device = Device.objects.get(name=req_dict['dev_id'])
-
-                    # Check if the POST data has needed payload fields
-                    if 'payload_fields' not in req_dict:
-                        # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data has no payload fields!')
-                        log.message = 'ERROR: Data has no payload fields!'
-                        log.save()
-                        return HttpResponse('ERROR: Data has no payload fields!')
-                    payload_dict = req_dict['payload_fields']
-                    if 'distance_inches' not in payload_dict or 'luminosity' not in payload_dict:
-                        # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data lacks needed payload fields!')
-                        log.message = 'ERROR: Data lacks needed payload fields!'
-                        log.save()
-                        return HttpResponse('ERROR: Data lacks needed payload fields!')
-
-                    # Check if the POST data has needed metadata
-                    if 'metadata' not in req_dict:
-                        # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data has no metadata!')
-                        log.message = 'ERROR: Data has no metadata!'
-                        log.save()
-                        return HttpResponse('ERROR: Data has no metadata!')
-                    metadata_dict = req_dict['metadata']
-                    if 'time' not in metadata_dict:
-                        # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data lacks needed metadata!')
-                        log.message = 'ERROR: Data lacks needed metadata!'
-                        log.save()
-                        return HttpResponse('ERROR: Data lacks needed metadata!')
-
-                    print(metadata_dict['time'])
-
-                    # POST data is good -> store transission in db
-                    Transmission.objects.create(timestamp=metadata_dict['time'],
-                                                device=device,
-                                                depth=payload_dict['distance_inches'],
-                                                flowrate=0,
-                                                voltage=payload_dict['luminosity'])
-
-                    # Return success message
-                    # GatewayLog.objects.create(raw_data=raw_data, message='SUCCESS: Transmission recieved and stored')
-                    log.message = 'SUCCESS: Transmission recieved and stored'
-                    log.save()
-                    return HttpResponse('SUCCESS: Transmission recieved and stored')
-                # If no device match stop and return error message
-                else:
-                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Device ID is not recognized!')
-                    log.message = 'ERROR: Device ID is not recognized!'
-                    log.save()
-                    return HttpResponse('ERROR: Device ID is not recognized!')
-            except Exception as e:
-                log.raw_data = log.raw_data + '\n\nEXCEPTION:\n' + str(e)
+            log.message = 'Authenticated!'
+            log.save()
+            # try:
+            # Get the device id if available
+            if 'dev_id' not in req_dict:
+                # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: No device identified!')
+                log.message = 'ERROR: No device identified!'
                 log.save()
-                return HttpResponse('EXCEPTION THROWN!')
+                return HttpResponse('ERROR: No device identified!')
+
+            log.message = 'Dev ID Field Check!'
+            log.save()
+
+            # Check if the device id matches a device in the db
+            device_list = []
+            for device in Device.objects.all():
+                device_list.append(device.name)
+            if req_dict['dev_id'] in device_list:
+                log.message = 'Dev ID in Device List!'
+                log.save()
+
+                # Get the device from the database
+                device = Device.objects.get(name=req_dict['dev_id'])
+
+                log.message = 'Device Query!'
+                log.save()
+
+                # Check if the POST data has needed payload fields
+                if 'payload_fields' not in req_dict:
+                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data has no payload fields!')
+                    log.message = 'ERROR: Data has no payload fields!'
+                    log.save()
+                    return HttpResponse('ERROR: Data has no payload fields!')
+                payload_dict = req_dict['payload_fields']
+
+                log.message = 'Payload Dict!'
+                log.save()
+
+                if 'distance_inches' not in payload_dict or 'luminosity' not in payload_dict:
+                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data lacks needed payload fields!')
+                    log.message = 'ERROR: Data lacks needed payload fields!'
+                    log.save()
+                    return HttpResponse('ERROR: Data lacks needed payload fields!')
+
+                log.message = 'Payload Fields!'
+                log.save()
+
+                # Check if the POST data has needed metadata
+                if 'metadata' not in req_dict:
+                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data has no metadata!')
+                    log.message = 'ERROR: Data has no metadata!'
+                    log.save()
+                    return HttpResponse('ERROR: Data has no metadata!')
+                metadata_dict = req_dict['metadata']
+
+                log.message = 'Metadata!'
+                log.save()
+
+                if 'time' not in metadata_dict:
+                    # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Data lacks needed metadata!')
+                    log.message = 'ERROR: Data lacks needed metadata!'
+                    log.save()
+                    return HttpResponse('ERROR: Data lacks needed metadata!')
+
+                log.message = 'Metadata Field (Time)!'
+                log.save()
+                print(metadata_dict['time'])
+
+                # POST data is good -> store transission in db
+                Transmission.objects.create(timestamp=metadata_dict['time'],
+                                            device=device,
+                                            depth=payload_dict['distance_inches'],
+                                            flowrate=0,
+                                            voltage=payload_dict['luminosity'])
+
+                log.message = 'Transmission Created!'
+                log.save()
+
+                # Return success message
+                # GatewayLog.objects.create(raw_data=raw_data, message='SUCCESS: Transmission recieved and stored')
+                log.message = 'SUCCESS: Transmission recieved and stored'
+                log.save()
+                return HttpResponse('SUCCESS: Transmission recieved and stored')
+            # If no device match stop and return error message
+            else:
+                # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: Device ID is not recognized!')
+                log.message = 'ERROR: Device ID is not recognized!'
+                log.save()
+                return HttpResponse('ERROR: Device ID is not recognized!')
+            # except Exception as e:
+            #     log.raw_data = log.raw_data + '\n\nEXCEPTION:\n' + str(e)
+            #     log.save()
+            #     return HttpResponse('EXCEPTION THROWN!')
         else:
             # GatewayLog.objects.create(raw_data=raw_data, message='Authentication Failure')
-            log.message = 'Authentication Failure'
+            log.message = 'Authentication Failure2'
             log.save()
             return HttpResponseForbidden('Authentication Failure')
 
