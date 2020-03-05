@@ -194,7 +194,7 @@ def gateway(request):
         # For logging and debugging the gateway
         raw_data = request.POST
         #print(raw_data)
-        log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
+        log = GatewayLog.objects.create(request, message='EXCEPTION THROWN!')
 
         # Convert the POST data into a python dictionary
         req_dict = json.loads(request.POST.get('request'))
