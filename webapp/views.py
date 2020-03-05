@@ -199,6 +199,8 @@ def gateway(request):
         # Convert the POST data into a python dictionary
         # req_dict = json.loads(request.POST.get('request'))
         req_dict = json.loads(raw_data)
+        log.message = 'req_dict\n' + req_dict + '\n\nraw_data\n' + raw_data
+        log.save()
         # print(req_dict['metadata']['time'])
 
         # return HttpResponse()
