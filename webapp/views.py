@@ -7,6 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseNotFound, HttpResponseForbidden
 from django.conf import settings
 import json
+from urllib.parse import unquote
 
 def index(request):
     # Create geological locations dict and health dict
@@ -189,12 +190,10 @@ def ui(request):
 def gateway(request):
     # This URL will be hit with POST data from the gateway and store it in db
     if request.method == 'POST':
-        print(request)
-
         # For logging and debugging the gateway
-        raw_data = request.POST
-        #print(raw_data)
-        log = GatewayLog.objects.create(request, message='EXCEPTION THROWN!')
+        raw_data = unquote(request.body.decode('utf-8')).replace('+', '')
+        print(raw_data)
+        log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
 
         # Convert the POST data into a python dictionary
         req_dict = json.loads(request.POST.get('request'))
