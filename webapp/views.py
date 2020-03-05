@@ -191,12 +191,17 @@ def gateway(request):
     # This URL will be hit with POST data from the gateway and store it in db
     if request.method == 'POST':
         # For logging and debugging the gateway
-        raw_data = unquote(request.body.decode('utf-8')).replace('+', '')
+        raw_data = unquote(request.body)
+        # raw_data = raw_data.replace('+', '').replace('request=', '')
         print(raw_data)
         log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
 
         # Convert the POST data into a python dictionary
-        req_dict = json.loads(request.POST.get('request'))
+        # req_dict = json.loads(request.POST.get('request'))
+        req_dict = json.loads(raw_data)
+        # print(req_dict['metadata']['time'])
+
+        # return HttpResponse()
 
         # Check the downlink_url for the "password"
         if 'downlink_url' not in req_dict:
@@ -245,6 +250,8 @@ def gateway(request):
                     log.message = 'ERROR: Data lacks needed metadata!'
                     log.save()
                     return HttpResponse('ERROR: Data lacks needed metadata!')
+
+                print(metadata_dict['time'])
 
                 # POST data is good -> store transission in db
                 Transmission.objects.create(timestamp=metadata_dict['time'],
