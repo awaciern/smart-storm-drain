@@ -193,20 +193,22 @@ def gateway(request):
         # For logging and debugging the gateway
         raw_data = unquote(request.body.decode('utf-8'))
         #raw_data = raw_data.replace('+', '').replace('request=', '')
-        print(raw_data)
+        #print(raw_data)
         log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
 
         # Convert the POST data into a python dictionary
         # req_dict = json.loads(request.POST.get('request'))
-        try:
-            req_dict = json.loads(raw_data)
-        except Exception as e:
-            log.raw_data = log.raw_data + '\n\nEXCEPTION:\n' + str(e)
-            log.save()
-            return HttpResponse('ERROR: JSON NOT LOADED!')
+        # try:
+        #     req_dict = json.loads(raw_data)
+        # except Exception as e:
+        #     log.raw_data = log.raw_data + '\n\nEXCEPTION:\n' + str(e)
+        #     log.save()
+        #     return HttpResponse('ERROR: JSON NOT LOADED!')
         # print(req_dict['metadata']['time'])
 
         # return HttpResponse()
+
+        req_dict = json.loads(raw_data)
 
         # Check the downlink_url for the "password"
         if 'downlink_url' not in req_dict:
@@ -214,7 +216,7 @@ def gateway(request):
             log.message = 'Authentication Failure'
             log.save()
             return HttpResponseForbidden('Authentication Failure')
-        if req_dict['downlink_url'] == settings.DL_URL_PW:
+        if settings.DL_URL_KEY in req_dict['downlink_url']:
             # Get the device id if available
             if 'dev_id' not in req_dict:
                 # GatewayLog.objects.create(raw_data=raw_data, message='ERROR: No device identified!')
