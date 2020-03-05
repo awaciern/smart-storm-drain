@@ -191,8 +191,8 @@ def gateway(request):
     # This URL will be hit with POST data from the gateway and store it in db
     if request.method == 'POST':
         # For logging and debugging the gateway
-        raw_data = request.body
-        # raw_data = raw_data.replace('+', '').replace('request=', '')
+        raw_data = unquote(request.body.decode('utf-8'))
+        #raw_data = raw_data.replace('+', '').replace('request=', '')
         print(raw_data)
         log = GatewayLog.objects.create(raw_data=raw_data, message='EXCEPTION THROWN!')
 
