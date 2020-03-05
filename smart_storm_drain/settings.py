@@ -22,8 +22,8 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = ')9t@7&jhkh%)0*5q5cs*v0jr6jbg1=mp#f*tga&k%&(j5y$3^7'
 
-# Downlink Url, acting as a password between gateway and webapp
-DL_URL_PW = "https://integrations.thethingsnetwork.org/ttn-eu/api/v2/down/lorassdotaa/ssddownlink?key=ttn-account-v2.Zm9bYhD16wjq8ChcrxLKyUtZCorjc-G-AYy9wbxJju8"
+# Downlink Url Key, acting as a password between gateway and webapp
+DL_URL_KEY = "ttn-account-v2.Zm9bYhD16wjq8ChcrxLKyUtZCorjc-G-AYy9wbxJju8"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
