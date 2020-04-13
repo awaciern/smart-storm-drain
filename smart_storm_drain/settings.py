@@ -23,7 +23,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = ')9t@7&jhkh%)0*5q5cs*v0jr6jbg1=mp#f*tga&k%&(j5y$3^7'
 
 # Downlink Url Key, acting as a password between gateway and webapp
-DL_URL_KEY = "ttn-account-v2.Zm9bYhD16wjq8ChcrxLKyUtZCorjc-G-AYy9wbxJju8"
+DL_URL_KEY = "ttn-account-v2.NDyLQuWebSs1LJAZjluk3OeTb_1ACTAwLgDrn_pfetY"
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -97,7 +97,7 @@ DATABASES = {
         'PORT': '1433',
         'OPTIONS': {
             'host_is_server': True,
-            'driver': 'ODBC Driver 17 for SQL Server',  # 13 if LOCAL, 17 if AZURE
+            'driver': 'ODBC Driver 13 for SQL Server',  # 13 if LOCAL, 17 if AZURE
         },
     },
 }

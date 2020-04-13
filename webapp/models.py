@@ -7,6 +7,11 @@ class Device(models.Model):
     latitude = models.FloatField()
     longitude = models.FloatField()
 
+    RATES = [(6, '6 minutes'),
+             (12, '12 minutes'),
+             (30, '30 minutes'),
+             (60, '60 minutes')]
+
     def __str__(self):
         return self.name
 
