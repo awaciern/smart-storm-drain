@@ -2,7 +2,7 @@ from django.shortcuts import render
 from datetime import datetime, timedelta
 from pytz import timezone
 from .models import Device, Transmission, GatewayLog
-from .forms import SelectionForm
+from .forms import SelectionForm, DeviceControllerForm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseNotFound,\
                         HttpResponseForbidden, HttpResponseServerError
@@ -159,8 +159,9 @@ def index(request):
             dates['min_day'] = Transmission.objects.filter(device=device)\
                                            .order_by('timestamp')[0].timestamp
 
-    # Create the form the user will see
-    form = SelectionForm(initial = {'device': device, 'metric': metric})
+    # Create the forms the user will see
+    form1 = SelectionForm(initial = {'device': device, 'metric': metric})
+    form2 = DeviceControllerForm()
 
     # Get the transimssion (if any) data for display from db based on date range
     if device_health != 4:
@@ -172,8 +173,8 @@ def index(request):
         transmissions = []
 
     # Render the html template and pass in the required data
-    print(dates)
-    return render(request, 'index.html', {'form': form,
+    return render(request, 'index.html', {'form1': form1,
+                                          'form2': form2,
                                           'locations': locations,
                                           'health': health,
                                           'metric': metric,

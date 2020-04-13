@@ -2,9 +2,6 @@ from django import forms
 from .models import Device, Transmission
 
 
-# class DateInput(forms.DateInput):
-#     input_type = 'date'
-
 class SelectionForm(forms.ModelForm):
     # Dropdown menu listing devices
     device = forms.ModelChoiceField(queryset=Device.objects.all(),
@@ -19,3 +16,15 @@ class SelectionForm(forms.ModelForm):
     class Meta:
         model = Device
         fields = ()
+
+
+class DeviceControllerForm(forms.Form):
+    # Choose between ON and OFF
+    power = forms.ChoiceField(choices=[('ON', 'ON'), ('OFF', 'OFF')])
+
+    # Choose between the four available transmission rates
+    RATES = [(6, '6 minutes'),
+             (12, '12 minutes'),
+             (30, '30 minutes'),
+             (60, '60 minutes')]
+    rate = forms.ChoiceField(choices=RATES)

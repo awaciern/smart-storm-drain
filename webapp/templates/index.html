@@ -62,19 +62,34 @@
       <div id="mapid" class="leaflet-container leaflet-retina leaflet-fade-anim leaflet-grab leaflet-touch-drag" tabindex="0"></div>
     </div>
     <div class="bottom">
-      <h2>Selected Device and Data to Display<h2>
-      <h3>Change the Device, Metric, or DateTime Range Selection</h3>
       {% block content %}
-      <form method="POST" class="post-form">{% csrf_token %}
-          {{ form.as_p }}
-          {% if device_health != 4 %}
-            <label>DateTime: </label>
-            <input type="text" name="datetimes" size="32" label="DateTime"/>
-            <br>
-            <br>
-          {% endif %}
-          <button type="submit" class="save btn btn-default">Submit</button>
-      </form>
+      <table>
+        <tr>
+          <td>
+            <h2>Selected Device and Data to Display<h2>
+            <h3>Change the Device, Metric, or DateTime Range Selection</h3>
+            <form method="POST" class="post-form">{% csrf_token %}
+                {{ form1.as_p }}
+                {% if device_health != 4 %}
+                  <label>DateTime: </label>
+                  <input type="text" name="datetimes" size="32" label="DateTime"/>
+                  <br>
+                  <br>
+                {% endif %}
+                <button type="submit" class="save btn btn-default">Submit</button>
+            </form>
+          </td>
+          <td></td><td></td><td></td><td></td><td></td>
+          <td>
+            <h2>Device Controller for {{ device }}</h2>
+            <h3>Adjust the Transmission Rate or Turn the Device OFF</h3>
+            <form method="POST" class="post-form">{% csrf_token %}
+              {{ form2.as_p }}
+            </form>
+            <button type="submit" class="save btn btn-default">Submit</button>
+          <td>
+        </tr>
+      </table>
       {% endblock %}
       {% if device_health != 4 %}
         <canvas id="myChart" height="85"></canvas>
