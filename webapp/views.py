@@ -161,14 +161,19 @@ def index(request):
 
     # Create the forms the user will see
     form1 = SelectionForm(initial = {'device': device, 'metric': metric})
-    form2 = DeviceControllerForm()
+    if device_health == 3 or device_health == 4:  # device is offline
+        device_power = 'OFF'  # so its power is OFF
+    else:  # device is online
+        device_power = 'ON'  # so its power is ON
+    form2 = DeviceControllerForm(initial = {'power': device_power,
+                                            'rate': device.transmission_rate})
 
     # Get the transimssion (if any) data for display from db based on date range
     if device_health != 4:
         transmissions = Transmission.objects.filter(device=device,
-                                                timestamp__range=
-                                                (dates['start_day'],
-                                                dates['end_day']))
+                                                    timestamp__range=
+                                                    (dates['start_day'],
+                                                    dates['end_day']))
     else:
         transmissions = []
 
@@ -181,7 +186,8 @@ def index(request):
                                           'device': device,
                                           'device_health': device_health,
                                           'dates': dates,
-                                          'transmissions': transmissions})
+                                          'transmissions': transmissions,
+                                          'authenticated': request.user.is_staff})
 
 
 def ui(request):

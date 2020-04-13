@@ -11,6 +11,7 @@ class Device(models.Model):
              (12, '12 minutes'),
              (30, '30 minutes'),
              (60, '60 minutes')]
+    transmission_rate = models.IntegerField(choices=RATES)
 
     def __str__(self):
         return self.name

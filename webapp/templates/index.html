@@ -83,10 +83,15 @@
           <td>
             <h2>Device Controller for {{ device }}</h2>
             <h3>Adjust the Transmission Rate or Turn the Device OFF</h3>
-            <form method="POST" class="post-form">{% csrf_token %}
-              {{ form2.as_p }}
-            </form>
-            <button type="submit" class="save btn btn-default">Submit</button>
+            {% if authenticated %}
+              <form method="POST" class="post-form">{% csrf_token %}
+                {{ form2.as_p }}
+              </form>
+              <button type="submit" class="save btn btn-default">Submit</button>
+            {% else %}
+              <i><h3>You are not authenticated as a Manager or Admin <br>
+                     and do not have access to the Device Controller</h3></i>
+            {% endif %}
           <td>
         </tr>
       </table>
