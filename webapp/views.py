@@ -19,7 +19,7 @@ def index(request):
     health['overall'] = 2
     health['healthy'] = 0
     health['flowing'] = 0
-    health['flooded'] = 0
+    health['clogged'] = 0
     health['offline'] = 0
 
     for loc in Device.objects.all():
@@ -44,8 +44,8 @@ def index(request):
             loc_health = 4  # offline, has never been online before
             health['offline'] += 1
         elif loc.pk == 5:
-            loc_health = 2  # flooded
-            health['flooded'] += 1
+            loc_health = 2  # possibly clogged
+            health['clogged'] += 1
 
         # Assign values to dict
         locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude,

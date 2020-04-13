@@ -29,7 +29,7 @@
             <h3>Overall System Health</h3>
             <p>Number of Healthy Drains: {{ health.healthy }}</p>
             <p>Number of Drains Collecting Water: {{ health.flowing }}</p>
-            <p>Number of Flooded Drians: {{ health.flooded }}</p>
+            <p>Number of Possibly Cogged Drians: {{ health.clogged }}</p>
             <p>Number of Offline Drains: {{ health.offline }}</p>
           </td>
         </tr>
@@ -47,7 +47,7 @@
             {% elif device_health == 1 %}
               <p>Status: Collecting Water<p>
             {% elif device_health == 2 %}
-              <p>Status: Flooded<p>
+              <p>Status: Possibly Clogged<p>
             {% elif device_health == 3 %}
               <p>Status: Offline (Previously Online)<p>
             {% else %}
@@ -386,7 +386,7 @@
     {% elif value.health == 1 %}
       L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: orangeIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Collecting Water");
     {% elif value.health == 2 %}
-      L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: redIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Flooded");
+      L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: redIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Possibly Clogged");
     {% elif value.health == 3 %}
       L.marker([{{ value.latitude }}, {{ value.longitude }}], {icon: greyIcon}).addTo(mymap).bindPopup("<b>{{ key }}</b><br>Health: Offline (Previously Online)");
     {% else %}
