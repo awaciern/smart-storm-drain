@@ -76,22 +76,25 @@
                   <br>
                   <br>
                 {% endif %}
-                <button type="submit" class="save btn btn-default">Submit</button>
-            </form>
+                <button type="submit" name="btn1">Submit</button>
+            <!-- </form> -->
           </td>
           <td></td><td></td><td></td><td></td><td></td>
           <td>
             <h2>Device Controller for {{ device }}</h2>
             <h3>Adjust the Transmission Rate or Turn the Device OFF</h3>
             {% if authenticated %}
-              <form method="POST" class="post-form">{% csrf_token %}
+              <!-- <form method="POST" class="post-form">{% csrf_token %} -->
                 {{ form2.as_p }}
-              </form>
-              <button type="submit" class="save btn btn-default">Submit</button>
+                <button type="submit" name="btn2" onclick="return confirm('WARNING: Are you sure you want to make the Device Controller changes specified? Powering a device OFF will cause the device to turn off PERMANENTLY and will require physical maintenance to turn back on.');">
+                  Submit
+                </button>
+              <!-- </form> -->
             {% else %}
               <i><h3>You are not authenticated as a Manager or Admin <br>
                      and do not have access to the Device Controller</h3></i>
             {% endif %}
+            </form>
           <td>
         </tr>
       </table>
@@ -104,6 +107,12 @@
     </div>
   </body>
 </html>
+
+<!-- <script>
+  function myScript() {
+    alert('WARN');
+  }
+</script> -->
 
 <!--DateTimepicker JavaScript-->
 <script>

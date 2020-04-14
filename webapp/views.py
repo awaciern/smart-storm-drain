@@ -56,6 +56,8 @@ def index(request):
 
     # If user selects a device/metric/date range, display proper data
     if request.method == 'POST':
+        print(request.POST)
+
         # POST data from python form
         metric = request.POST.get('metric')
         device = Device.objects.get(pk=request.POST.get('device'))
