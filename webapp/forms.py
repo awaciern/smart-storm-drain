@@ -26,5 +26,5 @@ class DeviceControllerForm(forms.Form):
     RATES = [(6, '6 minutes'),
              (12, '12 minutes'),
              (30, '30 minutes'),
-             (60, '60 minutes')]
+             (60, '1 hour')]
     rate = forms.ChoiceField(choices=RATES)

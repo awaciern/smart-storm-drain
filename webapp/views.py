@@ -9,6 +9,7 @@ from django.http import HttpResponse, HttpResponseNotFound,\
 from django.conf import settings
 import json
 from urllib.parse import unquote
+import requests
 
 def index(request):
     # Create geological locations dict and health dict
@@ -56,11 +57,52 @@ def index(request):
 
     # If user selects a device/metric/date range, display proper data
     if request.method == 'POST':
-        print(request.POST)
+        # print(request.POST)
 
         # POST data from python form
         metric = request.POST.get('metric')
         device = Device.objects.get(pk=request.POST.get('device'))
+
+        # If Device Controller was used, make specified changes
+        if 'btn2' in request.POST:
+            # Change transmission rate if it is different
+            rate = request.POST.get('rate')
+            if int(rate) != device.transmission_rate:
+                # Change in db
+                device.transmission_rate = rate
+                device.save()
+
+                # Send downlink message to gateway for the change
+                if rate == 6:
+                    payload = "Ag=="
+                elif rate == 12:
+                    payload = "Aw=="
+                elif rate == 30:
+                    payload = "BA=="
+                else:
+                    payload = "BQ=="
+                data = {
+                  "dev_id": str(device),
+                  "port": 1,
+                  "confirmed": False,  # TODO: Ask Alex???
+                  "payload_raw": payload
+                }
+                r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
+                print(r)
+                print(r.text)
+
+            # Turn the power OFF if the user selected it
+            if request.POST.get('power') == 'OFF':
+                # Send downlink message to gateway to turn power OFF
+                data = {
+                  "dev_id": str(device),
+                  "port": 1,
+                  "confirmed": False,  # TODO: Ask Alex???
+                  "payload_raw": "AQ=="
+                }
+                r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
+                print(r)
+                print(r.text)
 
         # Find the selected device health for display
         device_health = locations[device]['health']
@@ -216,7 +258,7 @@ def gateway(request):
                 log.message = 'Authentication Failure'
                 log.save()
                 return HttpResponseForbidden('Authentication Failure')
-            if settings.DL_URL_KEY in req_dict['downlink_url']:
+            if settings.DL_URL in req_dict['downlink_url']:
                 # Get the device id if available
                 if 'dev_id' not in req_dict:
                     # No device identified
