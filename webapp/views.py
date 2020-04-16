@@ -57,8 +57,6 @@ def index(request):
 
     # If user selects a device/metric/date range, display proper data
     if request.method == 'POST':
-        # print(request.POST)
-
         # POST data from python form
         metric = request.POST.get('metric')
         device = Device.objects.get(pk=request.POST.get('device'))
@@ -88,8 +86,8 @@ def index(request):
                   "payload_raw": payload
                 }
                 r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
-                print(r)
-                print(r.text)
+                # print(r)
+                # print(r.text)
 
             # Turn the power OFF if the user selected it
             if request.POST.get('power') == 'OFF':
@@ -101,8 +99,8 @@ def index(request):
                   "payload_raw": "AQ=="
                 }
                 r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
-                print(r)
-                print(r.text)
+                # print(r)
+                # print(r.text)
 
         # Find the selected device health for display
         device_health = locations[device]['health']
