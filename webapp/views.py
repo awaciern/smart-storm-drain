@@ -71,14 +71,14 @@ def index(request):
                 device.save()
 
                 # Send downlink message to gateway for the change
-                if rate == 6:
-                    payload = "Ag=="
-                elif rate == 12:
-                    payload = "Aw=="
-                elif rate == 30:
-                    payload = "BA=="
+                if int(rate) == 6:
+                    payload = "Ag=="  # 0x02
+                elif int(rate) == 12:
+                    payload = "Aw=="  # 0x03
+                elif int(rate) == 30:
+                    payload = "BA=="  # 0x04
                 else:
-                    payload = "BQ=="
+                    payload = "BQ=="  # 0x05
                 data = {
                   "dev_id": str(device),
                   "port": 1,
@@ -96,7 +96,7 @@ def index(request):
                   "dev_id": str(device),
                   "port": 1,
                   "confirmed": False,  # TODO: Ask Alex???
-                  "payload_raw": "AQ=="
+                  "payload_raw": "AQ=="  # 0x01
                 }
                 r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
                 # print(r)
