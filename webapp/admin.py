@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Device, Transmission, GatewayLog
+from .models import Device, Transmission, UplinkLog, DownlinkLog
 
 
 class DeviceAdmin(admin.ModelAdmin):
@@ -14,7 +14,13 @@ class TransmissionAdmin(admin.ModelAdmin):
 admin.site.register(Transmission, TransmissionAdmin)
 
 
-class GatewayLogAdmin(admin.ModelAdmin):
+class UplinkLogAdmin(admin.ModelAdmin):
     list_display = ['timestamp', 'message', 'raw_data']
 
-admin.site.register(GatewayLog, GatewayLogAdmin)
+admin.site.register(UplinkLog, UplinkLogAdmin)
+
+
+class DownlinkLogAdmin(admin.ModelAdmin):
+    list_display = ['timestamp', 'http_response', 'raw_data']
+
+admin.site.register(DownlinkLog, DownlinkLogAdmin)

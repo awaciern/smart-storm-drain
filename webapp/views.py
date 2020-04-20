@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from datetime import datetime, timedelta
 from pytz import timezone
-from .models import Device, Transmission, GatewayLog
+from .models import Device, Transmission, UplinkLog, DownlinkLog
 from .forms import SelectionForm, DeviceControllerForm
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse, HttpResponseNotFound,\
@@ -86,8 +86,9 @@ def index(request):
                   "payload_raw": payload
                 }
                 r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
-                # print(r)
-                # print(r.text)
+
+                # Log the downlink
+                log = DownlinkLog.objects.create(raw_data=data, http_response=r)
 
             # Turn the power OFF if the user selected it
             if request.POST.get('power') == 'OFF':
@@ -99,8 +100,9 @@ def index(request):
                   "payload_raw": "AQ=="  # 0x01
                 }
                 r = requests.post(settings.DL_URL + settings.DL_KEY, json=data)
-                # print(r)
-                # print(r.text)
+
+                # Log the downlink
+                log = DownlinkLog.objects.create(raw_data=data, http_response=r)
 
         # Find the selected device health for display
         device_health = locations[device]['health']
@@ -245,7 +247,7 @@ def gateway(request):
             # Get the raw data from the request and log it
             raw_data = unquote(request.body.decode('utf-8'))
             #raw_data = raw_data.replace('+', '').replace('request=', '')
-            log = GatewayLog.objects.create(raw_data=raw_data, message='')
+            log = UplinkLog.objects.create(raw_data=raw_data, message='')
 
             # Turn the raw data into JSON
             req_dict = json.loads(raw_data)

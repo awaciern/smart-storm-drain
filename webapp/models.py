@@ -34,7 +34,13 @@ class Transmission(models.Model):
         return '{0} at {1}'.format(self.device, self.timestamp)
 
 
-class GatewayLog(models.Model):
+class UplinkLog(models.Model):
     raw_data = models.TextField()
     message = models.CharField(max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class DownlinkLog(models.Model):
+    raw_data = models.TextField()
+    http_response = models.CharField(max_length=100)
     timestamp = models.DateTimeField(auto_now_add=True)
