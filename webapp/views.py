@@ -281,7 +281,9 @@ def gateway(request):
                         log.save()
                         return HttpResponse('ERROR: Data has no payload fields!')
                     payload_dict = req_dict['payload_fields']
-                    if 'distance_inches' not in payload_dict or 'luminosity' not in payload_dict:
+                    if 'distance_inches' not in payload_dict or \
+                       'flowrate' not in payload_dict or \
+                       'voltage' not in payload_dict:
                         # Needed fields not present in payload fields
                         log.message = 'ERROR: Data lacks needed payload fields!'
                         log.save()
@@ -304,8 +306,8 @@ def gateway(request):
                     Transmission.objects.create(timestamp=metadata_dict['time'],
                                                 device=device,
                                                 depth=payload_dict['distance_inches'],
-                                                flowrate=0,
-                                                voltage=payload_dict['luminosity'])
+                                                flowrate=payload_dict['flowrate'],
+                                                voltage=payload_dict['voltage'])
 
                     # Return success message
                     log.message = 'SUCCESS: Transmission recieved and stored'
