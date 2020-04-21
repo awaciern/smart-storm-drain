@@ -194,7 +194,7 @@
         'rgba(0,204,0,0.5)',
       {% elif transmission.flowrate == 2 %}
         'rgba(255,204,0,0.5)',
-      {% elif transmission.flowrate == 3 %}
+      {% elif transmission.flowrate == -1 %}
         'rgba(255,0,0,0.5)',
       {% else %}
         'rgba(128,128,128,0.5)',
@@ -207,7 +207,7 @@
         'rgba(0,204,0,1)',
       {% elif transmission.flowrate == 2 %}
         'rgba(255,204,0,1)',
-      {% elif transmission.flowrate == 3 %}
+      {% elif transmission.flowrate == -1 %}
         'rgba(255,0,0,1)',
       {% else %}
         'rgba(128,128,128,1)',
@@ -259,17 +259,16 @@
                 fontSize: 20
               },
               ticks: {
-                beginAtZero: true,
-                suggestedMax: 3,
+                beginAtZero: false,
+                min: -1,
+                suggestedMax: 2,
                 callback: function(label) {
                   switch(label) {
-                    case 0:
-                      return 'None';
+                    case -1:
+                      return 'Possible Clog';
                     case 1:
-                      return 'Low';
+                      return 'Normal';
                     case 2:
-                      return 'Medium';
-                    case 3:
                       return 'High';
                   }
                 }

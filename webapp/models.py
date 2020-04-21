@@ -19,10 +19,9 @@ class Device(models.Model):
 
 class Transmission(models.Model):
     LEVELS = (
-        (0, 'None'),
-        (1, 'Low'),
-        (2, 'Medium'),
-        (3, 'High')
+        (0, 'Posible Clog'),
+        (1, 'Normal'),
+        (2, 'High'),
     )
     timestamp = models.DateTimeField()
     device = models.ForeignKey(Device, on_delete=models.CASCADE)

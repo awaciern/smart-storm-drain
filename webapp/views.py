@@ -29,6 +29,7 @@ def index(request):
         # If the device has no transmissions, it is offline
         if len(Transmission.objects.filter(device=loc)) == 0:
             loc_health = 4  # offline, never been online
+            health['offline'] += 1
 
         # Eventually, there will be logic here to determine health from metrics
         # Right now, I am just assigning them
@@ -38,15 +39,14 @@ def index(request):
         elif loc.pk == 2:
             loc_health = 1  # collecting water
             health['flowing'] += 1
-        elif loc.pk == 3:
-            loc_health = 3  # offline, but has been online before
-            health['offline'] += 1
-        elif loc.pk == 4:
-            loc_health = 4  # offline, has never been online before
-            health['offline'] += 1
-        elif loc.pk == 5:
+        elif loc.pk == 3 or loc.pk ==5:
             loc_health = 2  # possibly clogged
             health['clogged'] += 1
+        elif loc.pk == 4:
+            loc_health = 3  # offline, but has been online before
+            health['offline'] += 1
+        elif loc_health == 0:
+            health['healthy'] += 1
 
         # Assign values to dict
         locations[loc] = {'latitude': loc.latitude, 'longitude': loc.longitude,
@@ -106,6 +106,8 @@ def index(request):
 
         # Find the selected device health for display
         device_health = locations[device]['health']
+        print(locations)
+        print(device_health)
 
         # If the device has never been online, no need to gather date info
         if device_health != 4:
@@ -218,6 +220,9 @@ def index(request):
                                                     timestamp__range=
                                                     (dates['start_day'],
                                                     dates['end_day']))
+        for transmission in transmissions:
+            if transmission.flowrate == 0:
+                transmission.flowrate = -1
     else:
         transmissions = []
 
