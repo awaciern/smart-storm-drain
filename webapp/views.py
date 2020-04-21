@@ -106,8 +106,6 @@ def index(request):
 
         # Find the selected device health for display
         device_health = locations[device]['health']
-        print(locations)
-        print(device_health)
 
         # If the device has never been online, no need to gather date info
         if device_health != 4:
@@ -118,11 +116,11 @@ def index(request):
                 dates['start_day'] = datetime.strptime(date_list_raw[0],
                                                        '%m/%d/%y %I:%M %p ')\
                                              .replace(tzinfo=timezone('UTC'))\
-                                             + timedelta(hours=5)
+                                             + timedelta(hours=4)
                 dates['end_day'] = datetime.strptime(date_list_raw[1],
                                                      ' %m/%d/%y %I:%M %p')\
                                            .replace(tzinfo=timezone('UTC'))\
-                                           + timedelta(hours=5)
+                                           + timedelta(hours=4)
 
                 # Find max and min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
@@ -138,12 +136,12 @@ def index(request):
                                                    .filter(device=device)\
                                                    .order_by('-timestamp')[0]\
                                                    .timestamp
-                    eastern_date = dates['end_day'] - timedelta(hours=5)
+                    eastern_date = dates['end_day'] - timedelta(hours=4)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
                                                   eastern_date.day,
                                                   tzinfo=timezone('UTC'))\
-                                                  + timedelta(hours=5)
+                                                  + timedelta(hours=4)
 
                 # End date is before first transission -> display most recent day data
                 if dates['end_day'] < dates['min_day']:  # message???
@@ -151,12 +149,12 @@ def index(request):
                                                    .filter(device=device)\
                                                    .order_by('-timestamp')[0]\
                                                    .timestamp
-                    eastern_date = dates['end_day'] - timedelta(hours=5)
+                    eastern_date = dates['end_day'] - timedelta(hours=4)
                     dates['start_day'] = datetime(eastern_date.year,
                                                   eastern_date.month,
                                                   eastern_date.day,
                                                   tzinfo=timezone('UTC'))\
-                                                  + timedelta(hours=5)
+                                                  + timedelta(hours=4)
 
             # If there is NOT date data from user input
             else:
@@ -164,12 +162,12 @@ def index(request):
                 dates['end_day'] = Transmission.objects.filter(device=device)\
                                                .order_by('-timestamp')[0]\
                                                .timestamp
-                eastern_date = dates['end_day'] - timedelta(hours=5)
+                eastern_date = dates['end_day'] - timedelta(hours=4)
                 dates['start_day'] = datetime(eastern_date.year,
                                               eastern_date.month,
                                               eastern_date.day,
                                               tzinfo=timezone('UTC'))\
-                                              + timedelta(hours=5)
+                                              + timedelta(hours=4)
                 # Find min transmission dates based on device selected
                 dates['max_day'] = Transmission.objects.filter(device=device)\
                                                .order_by('-timestamp')[0]\
@@ -192,12 +190,12 @@ def index(request):
             # Initially set date range of most recent day's data
             dates['end_day'] = Transmission.objects.filter(device=device)\
                                                    .last().timestamp
-            eastern_date = dates['end_day'] - timedelta(hours=5)
+            eastern_date = dates['end_day'] - timedelta(hours=4)
             dates['start_day'] = datetime(eastern_date.year,
                                           eastern_date.month,
                                           eastern_date.day,
                                           tzinfo=timezone('UTC'))\
-                                          + timedelta(hours=5)
+                                          + timedelta(hours=4)
 
             # Find min transmission dates based on device selected
             dates['max_day'] = Transmission.objects.filter(device=device)\
@@ -220,12 +218,14 @@ def index(request):
                                                     timestamp__range=
                                                     (dates['start_day'],
                                                     dates['end_day']))
+        # Change possible clog flowrate from 0 to -1 so it will show up on the graph
         for transmission in transmissions:
             if transmission.flowrate == 0:
                 transmission.flowrate = -1
     else:
         transmissions = []
 
+    print(dates)
     # Render the html template and pass in the required data
     return render(request, 'index.html', {'form1': form1,
                                           'form2': form2,
