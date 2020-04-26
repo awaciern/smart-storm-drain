@@ -86,7 +86,7 @@ DATABASES = {
         'PORT': '1433',
         'OPTIONS': {
             'host_is_server': True,
-            'driver': 'ODBC Driver 13 for SQL Server',  # 13 if LOCAL, 17 if AZURE
+            'driver': 'ODBC Driver 17 for SQL Server',  # 13 if LOCAL, 17 if AZURE
         },
     },
 }
