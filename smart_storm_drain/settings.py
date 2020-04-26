@@ -75,18 +75,6 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'smart_storm_drain.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/2.2/ref/settings/#databases
-
-# # OLD LOCAL
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-#     }
-# }
-
 # SQL DB in Azure
 DATABASES = {
     'default': {
@@ -98,14 +86,10 @@ DATABASES = {
         'PORT': '1433',
         'OPTIONS': {
             'host_is_server': True,
-            'driver': 'ODBC Driver 17 for SQL Server',  # 13 if LOCAL, 17 if AZURE
+            'driver': 'ODBC Driver 13 for SQL Server',  # 13 if LOCAL, 17 if AZURE
         },
     },
 }
-
-# # set this to False if you want to turn off pyodbc's connection pooling
-# DATABASE_CONNECTION_POOLING = False
-
 
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators

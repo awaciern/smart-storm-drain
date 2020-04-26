@@ -21,6 +21,5 @@ from webapp import views
 urlpatterns = [
     url('admin/', admin.site.urls),
     url('^$', views.index, name='index'),
-    url('^ui', views.ui, name='ui'),
     url('^gateway', views.gateway, name='gateway'),
 ]

@@ -11,6 +11,8 @@ import json
 from urllib.parse import unquote
 import requests
 
+
+# Homepage code
 def index(request):
     # Create geological locations dict and health dict
     locations = {}
@@ -239,10 +241,7 @@ def index(request):
                                           'authenticated': request.user.is_staff})
 
 
-def ui(request):
-    return render(request, 'ui.html', context=None)
-
-
+# Gateway Endpoint code
 @csrf_exempt
 def gateway(request):
     # This URL will be hit with POST data from the gateway and store it in db
