@@ -17,7 +17,7 @@ This folder contains files that specify how the Smart Storm Drain web applicatio
   * `index.html` contains all the code for the Webpage GUI, including the code for the JavaScript apps
 * `static` contains all CSS stylings, images, and JavaScript libraries used on the site
 
-## si_data folder
+## sim_data folder
 
 This folder contains the Python scripts used to generate simulated data for Test Devices on the website.
 
